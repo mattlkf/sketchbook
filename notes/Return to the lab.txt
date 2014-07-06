@@ -1,0 +1,10 @@
+Return to the lab
+
+Today I accomplished the following:
+
+1) Confirmed that we are able to get GPS data from the Libelium module.
+	Setup: s110 + FTDI (5V VCC, 3.3V data) + Libelium Module + Adapter Cable + GPS Antenna
+2) Measured current consumption of Arduino Pro Mini from China with LED on
+	3.05mA at 4.6V (terrible! they scammed me, the regulated VCC should be 3.3V!)
+
+3) Set up my Arduino private repo

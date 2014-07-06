@@ -184,7 +184,7 @@ AVRTOOLSPATH ?= $(subst :, , $(PATH)) $(ARDUINODIR)/hardware/tools \
 $(info SKETCHBOOKDIR is $(SKETCHBOOKDIR))
 # default path to find libraries
 LIBRARYPATH ?= libraries libs $(SKETCHBOOKDIR)/libraries $(ARDUINODIR)/libraries
-
+$(info LIBRARYPATH is $(LIBRARYPATH); will look for libraries here)
 # default serial device to a poor guess (something that might be an arduino)
 SERIALDEVGUESS := 0
 ifndef SERIALDEV
@@ -280,7 +280,7 @@ AVRSIZE := $(call findsoftware,avr-size)
 ARDUINOCOREDIR := $(ARDUINODIR)/hardware/arduino/avr/cores/arduino
 LIBRARYDIRS := $(foreach lib, $(LIBRARIES), \
 	$(firstword $(wildcard $(addsuffix /$(lib), $(LIBRARYPATH)))))
-LIBRARYDIRS += $(addsuffix /utility, $(LIBRARYDIRS))
+LIBRARYDIRS += $(addsuffix /src, $(LIBRARYDIRS))
 
 $(info LIBRARYDIRS: $(LIBRARYDIRS))
 
@@ -337,11 +337,16 @@ endif
 
 .PHONY:	all target upload clean boards monitor size bootloader
 
-all: target
+all: target clean
+
+test: clean
+	@echo "Within rule test"
 
 target: $(TARGET).hex
 
-upload: target
+upload: target uploadcore clean
+
+uploadcore:
 	@echo "\nUploading to board..."
 	@test -n "$(SERIALDEV)" || { \
 		echo "error: SERIALDEV could not be determined automatically." >&2; \
@@ -380,7 +385,9 @@ monitor:
 		echo; }
 	screen $(SERIALDEV)
 
-size: $(TARGET).elf
+size: sizecore clean
+
+sizecore: $(TARGET).elf 
 	echo && $(AVRSIZE) --format=avr --mcu=$(BOARD_BUILD_MCU) $(TARGET).elf
 
 bootloader:
