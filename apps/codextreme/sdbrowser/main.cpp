@@ -36,8 +36,10 @@ ls
 
 #define SD_CS_PIN 10
 
-void printLine(const char *, const uint8_t len);
-void handleLine(const char *, const uint8_t len);
+void printLine(const char *, const uint8_t);
+void handleLine(const char *, const uint8_t);
+void catFile(const char *, const uint8_t);
+
 
 void setup(){
 	Serial.begin(9600);
@@ -100,38 +102,98 @@ void printLine(const char * buf, const uint8_t len){
 	return;
 }
 
-bool match(const char * a, uint8_t s, uint8_t e, const char * b){
+bool match(const char * a, uint8_t alen, const char * b){
 	//debug
 	Serial.print("Matching ");
-	for(uint8_t i = s; i < e; i++) Serial.print(a[i]);
+	for(uint8_t i = 0; i < alen; i++) Serial.print(a[i]);
 	Serial.print(" with ");
 	Serial.println(b);
 
-	a += s;
-	e -= s;
-
-	for(uint8_t i = 0; b[i] && i < e; i++){
+	uint8_t i;
+	for(i = 0; b[i] && i < alen; i++){
 		if(a[i] == b[i]) continue;
 		return false;
 	}
 
-	return true;
+	if(b[i] == '\0' && i == alen) return true;
+
+	return false;
 }
 
 void handleLine(const char * buf, const uint8_t len){
 	// printLine(buf, len);
 	
-	uint8_t s = 0;
-	uint8_t t = 0;
+	uint8_t s = 0, t = 0;
 	//advance s to the start of the next token, or end-line (s == len).
-	while(s < len && buf[s] == ' ') ++s;
+	for(s = t; s < len && buf[s] == ' '; ++s);
 	//advance t to the first non-token character after s, or end-line (t == len).
-	t = s;
-	while(t < len && buf[t] != ' ') ++t;
+	for(t = s; t < len && buf[t] != ' '; ++t);
 
-	if(match(buf, s, t, "hello")){
+	if(match(buf + s, t - s, "hello")){
 		Serial.println("hi :D");
+	}
+	else if(match(buf + s, t - s, "cat")){
+		for(s = t; s < len && buf[s] == ' '; ++s);
+		for(t = s; t < len && buf[t] != ' '; ++t);
+
+		// Serial.print("s: ");
+		// Serial.println(s);
+		// Serial.print("t: ");
+		// Serial.println(t);
+		// Serial.print("len: ");
+		// Serial.println(len);
+		
+		catFile(buf + s, t-s);
 	}
 
 	return;
+}
+
+bool validFile(const char * f, const uint8_t len){
+	uint8_t point = len;
+	uint8_t i;
+
+	for(i=0;i<len;i++){
+		if(f[i] == '.'){
+			if(point == len) point = i;
+			else {
+				Serial.println("Too many dots!");
+				return false; // more than one dot!
+			}
+		}
+	}
+
+	if(point == 0 || point > 8 ){
+		Serial.println("Name before point invalid");
+		return false; //must be from 1 to 8 chars
+	}
+	if(len - point != 4){
+		Serial.println(len);
+		Serial.println(point);
+		Serial.println("Post-dot must be len 3");
+		return false; // must be exactly 4 nonpoint chars including the dot
+	}
+	for(i=0;i<len;i++){
+		if(i != point)
+			if(!((f[i]>='a' && f[i]<='z') || (f[i]>='A' && f[i]<='Z') || (f[i]>='0' && f[i]<='9')) ){
+			Serial.println("Non-alphanumeric element found");
+			return false;
+		}
+	}
+
+	return true;
+}
+
+void catFile(const char * f, const uint8_t len){
+	printLine(f, len);
+	if(!validFile(f, len)){
+		Serial.println("Error: filename must be in 8.3 format");
+		return;
+	}
+	else {
+		Serial.println("Valid!");
+	}
+
+
+
 }
