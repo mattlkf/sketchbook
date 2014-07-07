@@ -1,4 +1,4 @@
 SOURCES := main.cpp
-LIBRARIES := SD
-BOARD := pro_3V
+LIBRARIES := SD SPI
+BOARD := pro_5V
 include ../../../arduino.mk
