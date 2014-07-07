@@ -1,0 +1,12 @@
+Playing with the SD library
+
+I have been playing with the Catalex SD card breakout board and 8GB SD card formatted with FAT16 (which sadly limits the max partition size to 4GB).
+
+Key findings:
+1) Arduino Pro Mini (5V) can reliably write data to files and read data from files that it has written. So if you use the SD card purely as a means of storage for the Arduino (so the Arduino is the only device that needs to access the SD card), then it works marvellously.
+
+2) Arduino cannot read from a file which has been created on Ubuntu with a lowercase file name. I tried creating two files, one named hello.txt and the other named HI.TXT, using gedit on Ubuntu. Only HI.TXT could be read by the Arduino. Even then, the formatting was off because of carriage-return issues.
+
+	OOPS! hi.txt, when opened by the Arduino, actually gave me the contents of hello.txt!
+	
+3) There are errors when I try to open a file written by the Arduino in Ubuntu.

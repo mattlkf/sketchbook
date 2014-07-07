@@ -190,10 +190,32 @@ void catFile(const char * f, const uint8_t len){
 		Serial.println("Error: filename must be in 8.3 format");
 		return;
 	}
-	else {
-		Serial.println("Valid!");
+
+	//the whole purpose of this is to make a null-terminated string
+	char fname[13];
+	for(uint8_t i = 0; i<len;i++)
+		fname[i] = f[i];
+	fname[len] = 0; //add a null terminator
+
+	if(!SD.exists(fname)){
+		Serial.print(fname);
+		Serial.println(" doesn't exist.");	
 	}
 
+	File myFile = SD.open(fname);
+	
+	if(!myFile){
+		Serial.println("Error: couldn't open file");
+	}
 
+    Serial.println("---");
+	// read from the file until there's nothing else in it:
+    while (myFile.available()) {
+        Serial.write(myFile.read());
+    }
+    Serial.println("---");
+	myFile.close();
+
+	return;
 
 }
