@@ -7,4 +7,4 @@ Today I accomplished the following:
 2) Measured current consumption of Arduino Pro Mini from China with LED on
 	3.05mA at 4.6V (terrible! they scammed me, the regulated VCC should be 3.3V!)
 
-3) Set up my Arduino private repo
+3) Set up my Arduino private repo :D

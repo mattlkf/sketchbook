@@ -1,0 +1,5 @@
+My private Arduino sketchbook.
+
+Complete with a Makefile modified from Edam's Makefile, that allows us to compile and upload Arduino code without having to touch the official Arduino IDE.
+
+The goal is that one can download the Arduino software first, then clone this sketchbook and compile from within this sketchbook without having to edit the Arduino software.
