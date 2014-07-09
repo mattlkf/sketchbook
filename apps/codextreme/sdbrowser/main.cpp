@@ -32,14 +32,20 @@ ls
 #include <SD.h>
 #include <string.h>
 
-#define MAX_BUF_LEN 255
-
 #define SD_CS_PIN 10
+
+#define MAX_BUF_LEN 25
+
+#define MAX_PATH_LEN 25
 
 void printLine(const char *, const uint8_t);
 void handleLine(const char *, const uint8_t);
 void catFile(const char *, const uint8_t);
+void lsDir(const char *, const uint8_t);
 
+
+char path[MAX_PATH_LEN] = "/";
+uint8_t plen = 1;
 
 void setup(){
 	Serial.begin(9600);
@@ -70,7 +76,7 @@ int main(){
 			
 			if(ch == '\r'){
 				if(flag){
-					Serial.print("Error: max line is");
+					Serial.print("Error: max line is ");
 					Serial.println(MAX_BUF_LEN);
 				}
 				else {
@@ -145,6 +151,13 @@ void handleLine(const char * buf, const uint8_t len){
 		
 		catFile(buf + s, t-s);
 	}
+	else if(match(buf+s, t-s, "ls")){
+		for(s = t; s < len && buf[s] == ' '; ++s);
+		for(t = s; t < len && buf[t] != ' '; ++t);
+
+		if(s == t) lsDir(path, plen);
+		else lsDir(buf + s, t-s);
+	}
 
 	return;
 }
@@ -218,4 +231,45 @@ void catFile(const char * f, const uint8_t len){
 
 	return;
 
+}
+
+void lsDir(const char * f, const uint8_t len){
+
+	//the whole purpose of this is to make a null-terminated string
+	char pathname[MAX_PATH_LEN];
+	for(uint8_t i = 0; i<len;i++)
+		pathname[i] = f[i];
+	pathname[len] = 0; //add a null terminator
+	
+	Serial.print("Going to list files in ");
+	Serial.println(pathname);
+	
+
+	File myFile = SD.open(pathname);
+	if(!myFile){
+		Serial.print("Error: could not open ");
+		Serial.println(pathname);
+		return;
+	}
+
+	if(!myFile.isDirectory()){
+		Serial.print(pathname);
+		Serial.println(" isn't a directory");
+		return;
+	}
+
+	//delay(3000);
+	myFile.rewindDirectory();
+	while(1){
+		File entry = myFile.openNextFile();
+		if(!entry) break;
+		Serial.println(entry.name());
+		entry.close();
+	}
+	myFile.rewindDirectory();
+
+	myFile.close();
+
+	
+	return;
 }
