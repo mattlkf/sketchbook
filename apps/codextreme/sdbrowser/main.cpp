@@ -39,10 +39,10 @@ ls
 #define MAX_PATH_LEN 25
 
 void printLine(const char *, const uint8_t);
-void handleLine(const char *, const uint8_t);
+void handleLine(char *, const uint8_t);
 void catFile(const char *, const uint8_t);
 void lsDir(const char *, const uint8_t);
-
+void changeDir(const char *, const uint8_t);
 
 char path[MAX_PATH_LEN] = "/";
 uint8_t plen = 1;
@@ -56,6 +56,7 @@ void setup(){
 	}
 
 	Serial.println("Ready");
+	if(!SD.exists("/")) Serial.println("root dir doesn't exist");
 }
 
 int main(){
@@ -126,7 +127,7 @@ bool match(const char * a, uint8_t alen, const char * b){
 	return false;
 }
 
-void handleLine(const char * buf, const uint8_t len){
+void handleLine(char * buf, const uint8_t len){
 	// printLine(buf, len);
 	
 	uint8_t s = 0, t = 0;
@@ -159,10 +160,52 @@ void handleLine(const char * buf, const uint8_t len){
 		else lsDir(buf + s, t-s);
 	}
 
+	else if(match(buf+s, t-s, "exists")){
+		for(s = t; s < len && buf[s] == ' '; ++s);
+		for(t = s; t < len && buf[t] != ' '; ++t);
+
+		char tmp = buf[t];
+		buf[t] = 0;
+		if(s!=t){
+			Serial.print("File ");
+			Serial.print(buf+s);
+
+			if(SD.exists(buf+s)){
+				Serial.println(" exists");
+			}
+			else{
+				Serial.println(" doesn't exist");
+			}
+		}
+		buf[t] = tmp;
+	}
+	else if(match(buf+s, t-s, "mkdir")){
+		for(s = t; s < len && buf[s] == ' '; ++s);
+		for(t = s; t < len && buf[t] != ' '; ++t);
+
+		char tmp = buf[t];
+		buf[t] = 0;
+		if(s!=t){
+			if(SD.exists(buf+s)){
+				Serial.println("It already exists");
+			}
+			else{
+				SD.mkdir(buf+s);
+			}
+		}
+		buf[t] = tmp;	
+	}
+	else if(match(buf+s, t-s, "cd")){
+		for(s = t; s < len && buf[s] == ' '; ++s);
+		for(t = s; t < len && buf[t] != ' '; ++t);
+
+		changeDir(buf + s, t-s);
+	}
+
 	return;
 }
 
-bool validFile(const char * f, const uint8_t len){
+bool validFileName(const char * f, const uint8_t len){
 	uint8_t point = len;
 	uint8_t i;
 
@@ -199,7 +242,7 @@ bool validFile(const char * f, const uint8_t len){
 
 void catFile(const char * f, const uint8_t len){
 	printLine(f, len);
-	if(!validFile(f, len)){
+	if(!validFileName(f, len)){
 		Serial.println("Error: filename must be in 8.3 format");
 		return;
 	}
@@ -212,13 +255,19 @@ void catFile(const char * f, const uint8_t len){
 
 	if(!SD.exists(fname)){
 		Serial.print(fname);
-		Serial.println(" doesn't exist.");	
+		Serial.println(" doesn't exist.");
+		return;
 	}
 
 	File myFile = SD.open(fname);
 	
 	if(!myFile){
 		Serial.println("Error: couldn't open file");
+		return;
+	}
+	if(myFile.isDirectory()){
+		Serial.println("Error: is a directory");
+		return;
 	}
 
     Serial.println("---");
@@ -271,5 +320,71 @@ void lsDir(const char * f, const uint8_t len){
 	myFile.close();
 
 	
+	return;
+}
+
+void changeDir(const char * f, const uint8_t len){
+	if(len == 0){
+		return;
+	}
+
+	if(len > MAX_PATH_LEN){
+		Serial.println("Error: exceeded max plen");
+		return;
+	}
+	//the whole purpose of this is to make a null-terminated string
+	char pathname[MAX_PATH_LEN];
+	for(uint8_t i = 0; i<len;i++)
+		pathname[i] = f[i];
+	pathname[len] = 0; //add a null terminator
+
+	
+	if(pathname[0] == '.'){
+		if(len == 2 && pathname[1] == '.'){
+			while(plen > 1 && path[(--plen)-1] != '/');
+			path[plen] = 0;
+		}
+	}
+	else if(pathname[0] == '/'){
+		// the len == 1 is for when we are cd-ing to root dir.
+		// SD.exists("/") is false. somehow.
+		if(len == 1 || SD.exists(pathname)){
+			plen = 0;
+			for(uint8_t i = 0; i<len;i++){
+				path[plen++] = f[i];
+			}
+			path[plen] = 0;
+		}
+		else{
+			Serial.print("Error: bad path ");
+			Serial.println(pathname);
+		}
+	}
+	else{
+		if(len + plen > MAX_PATH_LEN){
+			Serial.println("Error: exceeded max plen");
+		}
+		else{
+			for(uint8_t i = 0; i<len;i++){
+				path[plen++] = f[i];
+			}
+			path[plen] = 0;
+			
+			if(!SD.exists(path)){
+				Serial.println("Error: new path is bad");
+				plen -= len;
+				path[plen] = 0;
+			}	
+		}
+	}
+
+	if(path[plen-1] != '/'){
+		path[plen++] = '/';
+		path[plen] = 0;
+	}
+
+	Serial.print("Path is now ");
+	Serial.println(path);
+
 	return;
 }
