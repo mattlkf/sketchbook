@@ -5,3 +5,5 @@ Todo:
 2) Edit arduino.mk to replace SERIALDEV with TTY - makes for easier typing (:
 
 3) Edit arduino.mk so silence unnecessary output when it's building all those objects, especially the output from mkdir.
+
+4) [DONE] Create new rule so that "make up" means "make upload"
