@@ -337,7 +337,7 @@ endif
 #_______________________________________________________________________________
 #                                                                          RULES
 
-.PHONY:	all target upload clean boards monitor size bootloader
+.PHONY:	all target up upload clean boards monitor size bootloader
 
 all: target clean
 
@@ -345,6 +345,8 @@ test: clean
 	@echo "Within rule test"
 
 target: $(TARGET).hex
+
+up: upload
 
 upload: target uploadcore clean
 
