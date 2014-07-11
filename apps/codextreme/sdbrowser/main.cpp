@@ -56,7 +56,7 @@ void setup(){
 	}
 
 	Serial.println("Ready");
-	if(!SD.exists("/")) Serial.println("root dir doesn't exist");
+	//if(!SD.exists("/")) Serial.println("root dir doesn't exist");
 }
 
 int main(){
