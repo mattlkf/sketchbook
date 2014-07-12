@@ -2,7 +2,7 @@
 #include <SD.h>
 
 #define SD_CS_PIN 10 //it MUST be 10 in order for the SD library to work
-#define SD_FILE_NAME "test3.txt"
+#define SD_FILE_NAME "test4.txt"
 
 File myFile;
 
