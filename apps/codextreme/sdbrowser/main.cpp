@@ -8,7 +8,7 @@ cat <filename in current directory>
 	Exceptions:
 		If the file doesn't exist
 
-touch <filename>
+nano <filename>
 	Create a new file for writing.
 	Exceptions:
 		If the file already exists.
@@ -25,6 +25,9 @@ pwd
 ls
 	Print the names of all the files and directories in the curent directory.
 
+rm <filename>
+	Remove a file
+
 */
 
 
@@ -38,11 +41,15 @@ ls
 
 #define MAX_PATH_LEN 25
 
+#define CL_LENGTH 50
+
 void printLine(const char *, const uint8_t);
 void handleLine(char *, const uint8_t);
 void catFile(const char *, const uint8_t);
 void lsDir(const char *, const uint8_t);
 void changeDir(const char *, const uint8_t);
+void nano(const char *, const uint8_t);
+void rm(char *, const uint8_t);
 
 char path[MAX_PATH_LEN] = "/";
 uint8_t plen = 1;
@@ -79,6 +86,7 @@ int main(){
 				if(flag){
 					Serial.print("Error: max line is ");
 					Serial.println(MAX_BUF_LEN);
+					flag = 0;
 				}
 				else {
 					handleLine(buf, blen);
@@ -127,21 +135,32 @@ bool match(const char * a, uint8_t alen, const char * b){
 	return false;
 }
 
+uint8_t advanceIdxPair(char * buf, const uint8_t len, uint8_t * start, uint8_t * end){
+	//advance s to the start of the next token, or end-line (s == len).
+	for(*start = *end; *start < len && buf[*start] == ' '; ++(*start));
+	//advance t to the first non-token character after s, or end-line (t == len).
+	for(*end = *start; *end < len && buf[*end] != ' '; ++(*end));
+
+	return !(*start == *end);
+}
+
 void handleLine(char * buf, const uint8_t len){
 	// printLine(buf, len);
 	
 	uint8_t s = 0, t = 0;
-	//advance s to the start of the next token, or end-line (s == len).
-	for(s = t; s < len && buf[s] == ' '; ++s);
-	//advance t to the first non-token character after s, or end-line (t == len).
-	for(t = s; t < len && buf[t] != ' '; ++t);
+	// //advance s to the start of the next token, or end-line (s == len).
+	// for(s = t; s < len && buf[s] == ' '; ++s);
+	// //advance t to the first non-token character after s, or end-line (t == len).
+	// for(t = s; t < len && buf[t] != ' '; ++t);
+
+	if(!advanceIdxPair(buf, len, &s, &t)) return;
 
 	if(match(buf + s, t - s, "hello")){
 		Serial.println("hi :D");
 	}
 	else if(match(buf + s, t - s, "cat")){
-		for(s = t; s < len && buf[s] == ' '; ++s);
-		for(t = s; t < len && buf[t] != ' '; ++t);
+
+		if(!advanceIdxPair(buf, len, &s, &t)) return;
 
 		// Serial.print("s: ");
 		// Serial.println(s);
@@ -153,53 +172,76 @@ void handleLine(char * buf, const uint8_t len){
 		catFile(buf + s, t-s);
 	}
 	else if(match(buf+s, t-s, "ls")){
-		for(s = t; s < len && buf[s] == ' '; ++s);
-		for(t = s; t < len && buf[t] != ' '; ++t);
 
-		if(s == t) lsDir(path, plen);
+		if(!advanceIdxPair(buf, len, &s, &t)){
+			lsDir(path, plen);
+		}
 		else lsDir(buf + s, t-s);
+	}	
+
+	else if(match(buf+s, t-s, "cl")){
+
+		for(uint8_t i = 0; i < CL_LENGTH; i++){
+			Serial.println();
+		}
 	}
 
 	else if(match(buf+s, t-s, "exists")){
-		for(s = t; s < len && buf[s] == ' '; ++s);
-		for(t = s; t < len && buf[t] != ' '; ++t);
-
+		
+		if(!advanceIdxPair(buf, len, &s, &t)) return;
+		
 		char tmp = buf[t];
 		buf[t] = 0;
-		if(s!=t){
-			Serial.print("File ");
-			Serial.print(buf+s);
 
-			if(SD.exists(buf+s)){
-				Serial.println(" exists");
-			}
-			else{
-				Serial.println(" doesn't exist");
-			}
+		Serial.print("File ");
+		Serial.print(buf+s);
+
+		if(SD.exists(buf+s)){
+			Serial.println(" exists");
 		}
+		else{
+			Serial.println(" doesn't exist");
+		}
+
 		buf[t] = tmp;
 	}
 	else if(match(buf+s, t-s, "mkdir")){
-		for(s = t; s < len && buf[s] == ' '; ++s);
-		for(t = s; t < len && buf[t] != ' '; ++t);
+		if(!advanceIdxPair(buf, len, &s, &t)) return;
 
 		char tmp = buf[t];
 		buf[t] = 0;
-		if(s!=t){
-			if(SD.exists(buf+s)){
-				Serial.println("It already exists");
-			}
-			else{
-				SD.mkdir(buf+s);
-			}
+
+		if(SD.exists(buf+s)){
+			Serial.println("It already exists");
 		}
+		else{
+			SD.mkdir(buf+s);
+		}
+
 		buf[t] = tmp;	
 	}
 	else if(match(buf+s, t-s, "cd")){
-		for(s = t; s < len && buf[s] == ' '; ++s);
-		for(t = s; t < len && buf[t] != ' '; ++t);
+		advanceIdxPair(buf, len, &s, &t);
 
 		changeDir(buf + s, t-s);
+	}
+
+	else if(match(buf+s, t-s, "nano")){
+		advanceIdxPair(buf, len, &s, &t);
+		
+		char tmp = buf[t];
+		buf[t] = 0;
+		nano(buf + s, t-s);
+		buf[t] = tmp;
+	}
+
+	else if(match(buf+s, t-s, "rm")){
+		advanceIdxPair(buf, len, &s, &t);
+		
+		char tmp = buf[t];
+		buf[t] = 0;
+		rm(buf + s, t-s);
+		buf[t] = tmp;
 	}
 
 	return;
@@ -272,8 +314,17 @@ void catFile(const char * f, const uint8_t len){
 
     Serial.println("---");
 	// read from the file until there's nothing else in it:
+    char ch = 0;
     while (myFile.available()) {
-        Serial.write(myFile.read());
+    	// insert a \n, if we see a \r without a \n behind
+    	if(ch == '\r'){
+    		ch = myFile.read();
+    		if(ch != '\n') Serial.write('\n');
+    	}
+		else{
+			ch = myFile.read();
+		}
+        Serial.write(ch);
     }
     Serial.println("---");
 	myFile.close();
@@ -386,5 +437,84 @@ void changeDir(const char * f, const uint8_t len){
 	Serial.print("Path is now ");
 	Serial.println(path);
 
+	return;
+}
+
+void nano(const char *f, const uint8_t len){
+
+	File myFile = SD.open(f, FILE_WRITE);
+
+	if(!validFileName(f, len)){
+		Serial.println("Error: filename must be in 8.3 format");
+		return;
+	}
+
+
+	if(!myFile){
+		Serial.print("Error: cannot open ");
+		Serial.print(f);
+		Serial.println(" for writing");
+		Serial.println(len);
+		return;
+	}
+
+	Serial.print("Enter a line for ");
+	Serial.println(f);
+
+	uint16_t count = 0;
+
+	while(1){
+		if(Serial.available()){
+			char ch = Serial.read();
+			Serial.print(ch);
+
+			myFile.print(ch);
+			++count;
+			if(ch == '\r'){
+				Serial.print("\n");
+				myFile.print("\n");
+				++count;
+				break;
+			}
+		}
+	}
+	Serial.print("Wrote ");
+	Serial.print(count);
+	Serial.println(" characters");
+	myFile.close();
+
+	return;
+}
+
+void rm(char *f, const uint8_t len){
+	if(!validFileName(f, len)){
+		Serial.println("Error: filename must be in 8.3 format");
+		return;
+	}
+
+	if(!SD.exists(f)){
+		Serial.print(f);
+		Serial.println(" doesn't exist.");
+		return;
+	}
+
+	File myFile = SD.open(f);
+
+	if(!myFile){
+		Serial.print("File error");
+		return;
+	}
+
+	if(myFile.isDirectory()){
+		Serial.println("Is a directory");
+		return;
+	}
+
+	myFile.close();
+
+	SD.remove(f);
+
+	Serial.print("Removed ");
+	Serial.println(f);
 	return;
 }
