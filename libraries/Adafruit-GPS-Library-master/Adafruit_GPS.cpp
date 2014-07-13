@@ -13,7 +13,7 @@ All text above must be included in any redistribution
 #include <Adafruit_GPS.h>
 
 // how long are max NMEA lines to parse?
-#define MAXLINELENGTH 120
+#define MAXLINELENGTH 70
 
 // we double buffer: read one line in and leave one for the main program
 volatile char line1[MAXLINELENGTH];
