@@ -50,12 +50,13 @@ void lsDir(const char *, const uint8_t);
 void changeDir(const char *, const uint8_t);
 void nano(const char *, const uint8_t);
 void rm(char *, const uint8_t);
+void size(char *, const uint8_t);
 
 char path[MAX_PATH_LEN] = "/";
 uint8_t plen = 1;
 
 void setup(){
-	Serial.begin(9600);
+	Serial.begin(115200);
 
 	Serial.println("Waiting for SD card");
 	while(!SD.begin(SD_CS_PIN)){
@@ -244,6 +245,14 @@ void handleLine(char * buf, const uint8_t len){
 		buf[t] = tmp;
 	}
 
+	else if(match(buf+s, t-s, "sz")){
+		advanceIdxPair(buf, len, &s, &t);
+		
+		char tmp = buf[t];
+		buf[t] = 0;
+		size(buf + s, t-s);
+		buf[t] = tmp;
+	}
 	return;
 }
 
@@ -516,5 +525,37 @@ void rm(char *f, const uint8_t len){
 
 	Serial.print("Removed ");
 	Serial.println(f);
+	return;
+}
+
+void size(char *f, const uint8_t len){
+	if(!validFileName(f, len)){
+		Serial.println("Error: filename must be in 8.3 format");
+		return;
+	}
+
+	if(!SD.exists(f)){
+		Serial.print(f);
+		Serial.println(" doesn't exist.");
+		return;
+	}
+
+	File myFile = SD.open(f);
+
+	if(!myFile){
+		Serial.print("File error");
+		return;
+	}
+
+	if(myFile.isDirectory()){
+		Serial.println("Is a directory");
+		return;
+	}
+
+	Serial.print("Size: ");
+	Serial.print(myFile.size());
+	Serial.println(" bytes");
+
+	myFile.close();
 	return;
 }
