@@ -64,7 +64,7 @@
 #   $ export BOARD=uno
 #   $ make
 #
-# You may also need to set SERIALDEV if it is not detected correctly.
+# You may also need to set TTY if it is not detected correctly.
 #
 # The presence of a .ino (or .pde) file causes the arduino.mk to automatically
 # determine values for SOURCES, TARGET and LIBRARIES.  Any .c, .cc and .cpp
@@ -119,7 +119,7 @@
 #              "libraries" (in the project directory), then your sketchbook
 #              "libraries" directory, then the Arduino libraries directory.
 #
-# SERIALDEV    The POSIX device name of the serial device that is the Arduino.
+# TTY    	   The POSIX device name of the serial device that is the Arduino.
 #              If unspecified, an attempt is made to guess the name of a
 #              connected Arduino's serial device, which may work in some cases.
 #
@@ -187,11 +187,11 @@ LIBRARYPATH ?= libraries libs $(SKETCHBOOKDIR)/libraries $(ARDUINODIR)/libraries
 
 $(info LIBRARYPATH is $(LIBRARYPATH); will look for libraries here)
 # default serial device to a poor guess (something that might be an arduino)
-SERIALDEVGUESS := 0
-ifndef SERIALDEV
-SERIALDEV := $(firstword $(wildcard \
+TTYGUESS := 0
+ifndef TTY
+TTY := $(firstword $(wildcard \
 	/dev/ttyACM? /dev/ttyUSB? /dev/tty.usbserial* /dev/tty.usbmodem*))
-SERIALDEVGUESS := 1
+TTYGUESS := 1
 endif
 
 # no board?
@@ -318,7 +318,7 @@ CPPFLAGS += $(addprefix -I , $(LIBRARYDIRS))
 CPPDEPFLAGS = -MMD -MP -MF .dep/$<.dep
 CPPINOFLAGS := -x c++ -include $(ARDUINOCOREDIR)/Arduino.h
 AVRDUDEFLAGS += $(addprefix -C , $(AVRDUDECONF)) -DV
-AVRDUDEFLAGS += -p $(BOARD_BUILD_MCU) -P $(SERIALDEV)
+AVRDUDEFLAGS += -p $(BOARD_BUILD_MCU) -P $(TTY)
 AVRDUDEFLAGS += -c $(BOARD_UPLOAD_PROTOCOL) -b $(BOARD_UPLOAD_SPEED)
 LINKFLAGS += -Os -Wl,--gc-sections -mmcu=$(BOARD_BUILD_MCU)
 
@@ -352,17 +352,17 @@ upload: target uploadcore clean
 
 uploadcore:
 	@echo "\nUploading to board..."
-	@test -n "$(SERIALDEV)" || { \
-		echo "error: SERIALDEV could not be determined automatically." >&2; \
+	@test -n "$(TTY)" || { \
+		echo "error: TTY could not be determined automatically." >&2; \
 		exit 1; }
-	@test 0 -eq $(SERIALDEVGUESS) || { \
-		echo "*GUESSING* at serial device:" $(SERIALDEV); \
+	@test 0 -eq $(TTYGUESS) || { \
+		echo "*GUESSING* at serial device:" $(TTY); \
 		echo; }
 ifeq "$(BOARD_BOOTLOADER_PATH)" "caterina"
-	stty $(STTYFARG) $(SERIALDEV) speed 1200
+	stty $(STTYFARG) $(TTY) speed 1200
 	sleep 1
 else
-	stty $(STTYFARG) $(SERIALDEV) hupcl
+	stty $(STTYFARG) $(TTY) hupcl
 endif
 	$(AVRDUDE) $(AVRDUDEFLAGS) -U flash:w:$(TARGET).hex:i
 
@@ -378,16 +378,16 @@ boards:
 			-e 's/(.{12}) *(.*)/\1 \2/'
 
 monitor:
-	@test -n "$(SERIALDEV)" || { \
-		echo "error: SERIALDEV could not be determined automatically." >&2; \
+	@test -n "$(TTY)" || { \
+		echo "error: TTY could not be determined automatically." >&2; \
 		exit 1; }
 	@test -n `which screen` || { \
 		echo "error: can't find GNU screen, you might need to install it." >&2 \
 		exit 1; }
-	@test 0 -eq $(SERIALDEVGUESS) || { \
-		echo "*GUESSING* at serial device:" $(SERIALDEV); \
+	@test 0 -eq $(TTYGUESS) || { \
+		echo "*GUESSING* at serial device:" $(TTY); \
 		echo; }
-	screen $(SERIALDEV)
+	screen $(TTY)
 
 size: sizecore clean
 
@@ -396,13 +396,13 @@ sizecore: $(TARGET).elf
 
 bootloader:
 	@echo "Burning bootloader to board..."
-	@test -n "$(SERIALDEV)" || { \
-		echo "error: SERIALDEV could not be determined automatically." >&2; \
+	@test -n "$(TTY)" || { \
+		echo "error: TTY could not be determined automatically." >&2; \
 		exit 1; }
-	@test 0 -eq $(SERIALDEVGUESS) || { \
-		echo "*GUESSING* at serial device:" $(SERIALDEV); \
+	@test 0 -eq $(TTYGUESS) || { \
+		echo "*GUESSING* at serial device:" $(TTY); \
 		echo; }
-	stty $(STTYFARG) $(SERIALDEV) hupcl
+	stty $(STTYFARG) $(TTY) hupcl
 	$(AVRDUDE) $(AVRDUDEFLAGS) -U lock:w:$(BOARD_BOOTLOADER_UNLOCK):m
 	$(AVRDUDE) $(AVRDUDEFLAGS) -eU lfuse:w:$(BOARD_BOOTLOADER_LFUSES):m
 	$(AVRDUDE) $(AVRDUDEFLAGS) -U hfuse:w:$(BOARD_BOOTLOADER_HFUSES):m
