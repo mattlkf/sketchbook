@@ -90,11 +90,11 @@ void xmit(const char * payload, const uint8_t len){
 	}
 	while(i < PAYLOADLEN) data[i++] = 0;
 
+	Mirf.send(data);
+
 	while(Mirf.isSending()){
 		Serial.println("wait..");
 	}
-
-	Mirf.send(data);
 
 	Serial.print("Sent: ");
 	for(i = 0;i<PAYLOADLEN;i++)
