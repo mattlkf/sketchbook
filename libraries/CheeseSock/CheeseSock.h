@@ -18,7 +18,6 @@
 	#define CSOCK_MAX_BUF 128
 #endif
 
-#include <Arduino.h>
 #include "SoftwareSerial.h"
 
 class CheeseSock

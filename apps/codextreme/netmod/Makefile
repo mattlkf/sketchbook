@@ -1,4 +1,4 @@
 SOURCES := main.cpp
-LIBRARIES := SD SPI Adafruit-GPS-Library-master SoftwareSerial CheeseSock
+LIBRARIES := SPI Mirf SoftwareSerial CheeseSock Commons
 BOARD := pro_5V
 include ../../../arduino.mk

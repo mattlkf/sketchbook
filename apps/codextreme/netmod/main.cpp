@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 #include <CheeseSock.h>
+#include <packet.h>
 
 CheeseSock csock(new SoftwareSerial(4,5));
 
@@ -8,6 +9,8 @@ void callback(const uint8_t * str, uint8_t len){
 	Serial.println("Received!");
 	Serial.write(str, len);
 	Serial.println("\n---");
+
+	printPkt((dataPkt *)str);
 	return;
 }
 

@@ -6,6 +6,8 @@
 #include <Adafruit_GPS.h>
 #include <CheeseSock.h>
 
+#include <packet.h>
+
 //#define LOG_RAW
 
 #define SD_CS_PIN 10
@@ -35,15 +37,6 @@ File logfile; //for raw GPS serial data
 File datafile; //for processed data
 File configfile; //for the persistent seqId number
 
-struct dataPkt{
-	uint16_t srcId;
-	uint32_t seqId;
-
-	uint8_t hour, min, sec;
-	uint8_t year, mth, day;
-	float latitude, longitude;
-};
-
 int freeRam () 
 {
   extern int __heap_start, *__brkval; 
@@ -59,18 +52,6 @@ void updateSeqNum(){
 	myFile.write((char*)&seqNum, sizeof(seqNum));
 	myFile.close();
 
-}
-
-void printPkt(dataPkt * pkt){
-	Serial.print("Packet ");
-	Serial.println(pkt->seqId);
-
-	Serial.print("Location: ");
-	Serial.print(pkt->latitude, 4);
-	Serial.print(", "); 
-	Serial.println(pkt->longitude, 4);
-
-    return;
 }
 
 void makePkt(dataPkt * pkt){
@@ -89,7 +70,7 @@ void makePkt(dataPkt * pkt){
 	updateSeqNum();
 	printPkt(pkt);
 	
-    Serial.print("Ram: ");
+    Serial.print(F("Ram: "));
     Serial.println(freeRam());
 
 	return;
@@ -98,29 +79,42 @@ void makePkt(dataPkt * pkt){
 void savePkt(dataPkt * pkt){
 	uint8_t written = datafile.write((char*)pkt, sizeof(*pkt));
 	datafile.flush();
-	Serial.print("Wrote ");
+	Serial.print(F("Wrote "));
 	Serial.print(sizeof(*pkt));
 	Serial.print("/");
 	Serial.print(written);
-	Serial.println(" to file");
+	Serial.println(F(" to file"));
 	return;
 }
 
 void sendPkt(dataPkt * pkt){
-	pkt->hour = GPS.hour;
-	pkt->min = GPS.minute;
-	pkt->sec = GPS.seconds;
-	pkt->year = GPS.year;
-	pkt->mth = GPS.month;
-	pkt->day = GPS.day;
-	pkt->latitude = GPS.latitude;
-	pkt->longitude = GPS.longitude;
+	// pkt->hour = GPS.hour;
+	// pkt->min = GPS.minute;
+	// pkt->sec = GPS.seconds;
+	// pkt->year = GPS.year;
+	// pkt->mth = GPS.month;
+	// pkt->day = GPS.day;
+	// pkt->latitude = GPS.latitude;
+	// pkt->longitude = GPS.longitude;
 
-	pkt->seqId = seqNum;
-	pkt->srcId = gNodeId;
+	// pkt->seqId = seqNum;
+	// pkt->srcId = gNodeId;
 
-	csock.send(2, (uint8_t *)pkt, sizeof(pkt));
-	//csock.send(2, "Hello");
+	pkt->hour = 1;
+	pkt->min = 2;
+	pkt->sec = 3;
+	pkt->year = 4;
+	pkt->mth = 5;
+	pkt->day = 6;
+	pkt->latitude = 3.14159;
+	pkt->longitude = 1.41;
+
+	pkt->seqId = 9999;
+	pkt->srcId = 12343;
+
+	// Serial.print(F("Pkt size: "));
+	// Serial.println(sizeof(*pkt));
+	csock.send(2, (uint8_t *)pkt, sizeof(*pkt));
 	return;
 }
 
@@ -144,7 +138,7 @@ void setupFile(){
 	    Serial.print(".");
 	    delay(1000);
 	}
-	Serial.println("Done.");
+	Serial.println(F("Done."));
 
 #ifdef LOG_RAW
 	char filename[15];
