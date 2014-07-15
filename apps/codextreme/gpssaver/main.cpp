@@ -1,14 +1,19 @@
+#include <main.h>
 #include <Arduino.h>
 #include <SPI.h>
 #include <SD.h>
 #include <SoftwareSerial.h>
 #include <Adafruit_GPS.h>
+#include <CheeseSock.h>
+
+//#define LOG_RAW
 
 #define SD_CS_PIN 10
 
-// SoftwareSerial mySerial(2, 3);
 SoftwareSerial mySerial(3,2); //modified to match my new wiring board
-SoftwareSerial cheeseSerial(4,5);
+
+
+CheeseSock csock(new SoftwareSerial(4,5));
 
 Adafruit_GPS GPS(&mySerial);
 
@@ -54,9 +59,6 @@ void updateSeqNum(){
 	myFile.write((char*)&seqNum, sizeof(seqNum));
 	myFile.close();
 
-	// configfile.seek(0);
-	// configfile.write((char*)&seqNum, sizeof(seqNum));
-	// configfile.flush();
 }
 
 void printPkt(dataPkt * pkt){
@@ -104,6 +106,24 @@ void savePkt(dataPkt * pkt){
 	return;
 }
 
+void sendPkt(dataPkt * pkt){
+	pkt->hour = GPS.hour;
+	pkt->min = GPS.minute;
+	pkt->sec = GPS.seconds;
+	pkt->year = GPS.year;
+	pkt->mth = GPS.month;
+	pkt->day = GPS.day;
+	pkt->latitude = GPS.latitude;
+	pkt->longitude = GPS.longitude;
+
+	pkt->seqId = seqNum;
+	pkt->srcId = gNodeId;
+
+	csock.send(2, (uint8_t *)pkt, sizeof(pkt));
+	//csock.send(2, "Hello");
+	return;
+}
+
 File openWriteFile(char * name){
 	File filePtr = SD.open(name, FILE_WRITE);
 	if(!filePtr){
@@ -126,6 +146,7 @@ void setupFile(){
 	}
 	Serial.println("Done.");
 
+#ifdef LOG_RAW
 	char filename[15];
   	//strcpy(filename, "gpslog00.txt");
   	for (uint8_t i = 0; i < 1000; i++) {
@@ -137,8 +158,9 @@ void setupFile(){
 	}
 
 	logfile = openWriteFile(filename);
+#endif
+
 	datafile = openWriteFile(DATA_FILE);
-	//configfile = openWriteFile(CONFIG_FILE);
 
   	delay(2000);
 
@@ -199,47 +221,23 @@ void setup(){
   // also spit it out
   Serial.begin(115200);
 
+  csock.begin(9600, 1);
+
   Serial.println("setupFile");
-  delay(500);
+  delay(100);
   setupFile();
 
 
   Serial.println("setupConfig");
-  delay(500);
+  delay(100);
   setupConfig();
 
 
   Serial.println("setupGPS");
-  delay(500);
+  delay(100);
   setupGPS();
 
 }
-
-// void printGPS(){
-// 	Serial.print("\nTime: ");
-// 	Serial.print(GPS.hour, DEC); Serial.print(':');
-// 	Serial.print(GPS.minute, DEC); Serial.print(':');
-// 	Serial.print(GPS.seconds, DEC); Serial.print('.');
-// 	Serial.println(GPS.milliseconds);
-// 	Serial.print("Date: ");
-// 	Serial.print(GPS.day, DEC); Serial.print('/');
-// 	Serial.print(GPS.month, DEC); Serial.print("/20");
-// 	Serial.println(GPS.year, DEC);
-// 	Serial.print("Fix: "); Serial.print((int)GPS.fix);
-// 	Serial.print(" quality: "); Serial.println((int)GPS.fixquality); 
-// 	if (GPS.fix) {
-// 		Serial.print("Location: ");
-// 		Serial.print(GPS.latitude, 4); Serial.print(GPS.lat);
-// 		Serial.print(", "); 
-// 		Serial.print(GPS.longitude, 4); Serial.println(GPS.lon);
-
-// 		Serial.print("Speed (knots): "); Serial.println(GPS.speed);
-// 		Serial.print("Angle: "); Serial.println(GPS.angle);
-// 		Serial.print("Altitude: "); Serial.println(GPS.altitude);
-// 		Serial.print("Satellites: "); Serial.println((int)GPS.satellites);
-// 	}
-// 	return;
-// }
 
 int main(){
 	init();
@@ -252,7 +250,11 @@ int main(){
 			Serial.write(c);  
 
 		if(GPS.newNMEAreceived()){
+		    Serial.println();
+
 		    char *stringptr = GPS.lastNMEA();
+
+#ifdef LOG_RAW
 		    uint8_t stringsize = strlen(stringptr);
 		    uint8_t writtensize;
 		    writtensize = logfile.write((uint8_t *)stringptr, stringsize);
@@ -262,9 +264,10 @@ int main(){
 		    	Serial.print(" ");
 		    	Serial.println(writtensize);
 		    }
-		    Serial.println();
-		    logfile.write('\r\n');
+		    logfile.write("\r\n");
 		    logfile.flush();
+#endif
+
 		    if (strstr(stringptr, "RMC")){
 			    GPS.parse(stringptr);
 
@@ -276,9 +279,13 @@ int main(){
 				}
 			    else{
 			    	Serial.println("No fix");
-				    Serial.print("Ram: ");
-				    Serial.println(freeRam());
 			    }
+
+			    //testing purposes
+			    dataPkt pkt;
+			    sendPkt(&pkt);
+			    Serial.print("Ram: ");
+			    Serial.println(freeRam());
 
 			}
 			else{

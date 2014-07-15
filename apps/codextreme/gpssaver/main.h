@@ -1,0 +1,2 @@
+#define CSOCK_MAX_BUF 40
+#define CSOCK_MAX_PORTS 4
