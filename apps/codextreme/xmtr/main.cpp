@@ -94,9 +94,9 @@ void xmit(const char * payload, const uint8_t len){
 
 	Mirf.send(data);
 
-	while(Mirf.isSending()){
-		Serial.println("wait..");
-	}
+	// while(Mirf.isSending()){
+	// 	Serial.println("wait..");
+	// }
 
 	Serial.print("Sent: ");
 	for(i = 0;i<PAYLOADLEN;i++)
@@ -110,7 +110,7 @@ void xmit(const char * payload, const uint8_t len){
 }
 
 void checkRecv(){
-	if(!Mirf.dataReady()){
+	if(Mirf.isSending() || !Mirf.dataReady()){
 		return;
 	}
 
