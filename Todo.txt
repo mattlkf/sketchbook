@@ -12,3 +12,5 @@ Todo:
 	This should not be so. Instead we should base it off the directory where the arduino.mk file exists.
 
 6) Fix a bug in CheeseSock and csockr - if the payload length exceeds the csock_max_len, we get a runtime error.
+
+7) Allow for "Commons" folder inside application directory, not inside libraries.
