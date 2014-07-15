@@ -6,7 +6,9 @@
 
 #define SD_CS_PIN 10
 
-SoftwareSerial mySerial(2, 3);
+// SoftwareSerial mySerial(2, 3);
+SoftwareSerial mySerial(3,2); //modified to match my new wiring board
+SoftwareSerial cheeseSerial(4,5);
 
 Adafruit_GPS GPS(&mySerial);
 
@@ -198,17 +200,17 @@ void setup(){
   Serial.begin(115200);
 
   Serial.println("setupFile");
-  delay(1000);
+  delay(500);
   setupFile();
 
 
   Serial.println("setupConfig");
-  delay(1000);
+  delay(500);
   setupConfig();
 
 
   Serial.println("setupGPS");
-  delay(1000);
+  delay(500);
   setupGPS();
 
 }
@@ -261,7 +263,7 @@ int main(){
 		    	Serial.println(writtensize);
 		    }
 		    Serial.println();
-		    logfile.write('\n');
+		    logfile.write('\r\n');
 		    logfile.flush();
 		    if (strstr(stringptr, "RMC")){
 			    GPS.parse(stringptr);
@@ -270,11 +272,13 @@ int main(){
 				    dataPkt pkt;
 				    makePkt(&pkt);
 				    savePkt(&pkt);
+				    // sendPkt(&pkt);
 				}
 			    else{
 			    	Serial.println("No fix");
+				    Serial.print("Ram: ");
+				    Serial.println(freeRam());
 			    }
-			    //sendPkt(&pkt);
 
 			}
 			else{

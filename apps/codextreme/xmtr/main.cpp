@@ -78,6 +78,8 @@ int main(){
 
 void xmit(const char * payload, const uint8_t len){
 	if(len > PAYLOADLEN){
+		Serial.print(len);
+		Serial.println(" bytes; too long");
 		return;
 	}
 
@@ -99,7 +101,10 @@ void xmit(const char * payload, const uint8_t len){
 	Serial.print("Sent: ");
 	for(i = 0;i<PAYLOADLEN;i++)
 		Serial.write(data[i]);
-	Serial.println();
+	Serial.print(" (");
+	Serial.print(len);
+	Serial.println(") bytes");
+	// Serial.println();
 
 	return;
 }
