@@ -2,7 +2,7 @@ Todo:
 
 1) Edit arduino.mk so that it supports the adding of user-defined BOARDS without having to edit the boards.txt file in the arduino directory.
 
-2) Edit arduino.mk to replace SERIALDEV with TTY - makes for easier typing (:
+2) [DONE] Edit arduino.mk to replace SERIALDEV with TTY - makes for easier typing (:
 
 3) Edit arduino.mk so silence unnecessary output when it's building all those objects, especially the output from mkdir.
 
@@ -10,3 +10,5 @@ Todo:
 
 5) Currently the Arduino Preferences file determines where our sketchbook directory is found by arduino.mk.
 	This should not be so. Instead we should base it off the directory where the arduino.mk file exists.
+
+6) Fix a bug in CheeseSock and csockr - if the payload length exceeds the csock_max_len, we get a runtime error.
