@@ -117,7 +117,7 @@ File openWriteFile(char * name){
 		Serial.print(F("Couldn't open "));
 	}
 	else{
-		Serial.print("Opened: ");
+		Serial.print(F("Opened: "));
 	}
 	Serial.println(name);
 
@@ -190,14 +190,14 @@ void setupConfig(){
 		myFile.write((char*)&seqNum, sizeof(seqNum));
 		myFile.close();
 
-		Serial.println("Newfile");
+		Serial.println(F("Newfile"));
 	}
 
 	File myFile = SD.open(CONFIG_FILE);
 	myFile.read((char*)&seqNum, sizeof(seqNum));
 	myFile.close();
 
-	Serial.print("SeqNum: ");
+	Serial.print(F("SeqNum: "));
 	Serial.println(seqNum);
 
 	return;
@@ -210,17 +210,17 @@ void setup(){
 
   csock.begin(9600, 1);
 
-  Serial.println("setupFile");
+  Serial.println(F("setupFile"));
   delay(100);
   setupFile();
 
 
-  Serial.println("setupConfig");
+  Serial.println(F("setupConfig"));
   delay(100);
   setupConfig();
 
 
-  Serial.println("setupGPS");
+  Serial.println(F("setupGPS"));
   delay(100);
   setupGPS();
 
@@ -265,19 +265,19 @@ int main(){
 				    sendPkt(&pkt);
 				}
 			    else{
-			    	Serial.println("No fix");
+			    	Serial.println(F("No fix"));
 
 				    //testing purposes
 				    dataPkt pkt;
 				    sendFakePkt(&pkt);
-				    Serial.print("Ram: ");
+				    Serial.print(F("Ram: "));
 				    Serial.println(freeRam());
 			    }
 
 
 			}
 			else{
-				Serial.print("Not RMC: ");
+				Serial.print(F("Not RMC: "));
 				for(uint8_t i = 0; i<5;i++) Serial.write(stringptr[i]);
 				Serial.write('\n');
 			}
