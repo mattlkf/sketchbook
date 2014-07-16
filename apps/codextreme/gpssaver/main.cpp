@@ -105,7 +105,7 @@ void sendFakePkt(dataPkt * pkt){
 	pkt->longitude = 1.41;
 
 	pkt->seqId = 9999;
-	pkt->srcId = 12343;
+	pkt->srcId = millis()%1000;
 
 	sendPkt(pkt);
 	return;

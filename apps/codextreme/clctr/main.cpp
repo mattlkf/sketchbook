@@ -15,6 +15,8 @@ void handleLine(char *, const uint8_t);
 void xmit(const char *, const uint8_t);
 void checkRecv();
 
+uint32_t timer = 0;
+
 void setupMirf(){
 	Mirf.spi = &MirfHardwareSpi;
 	Mirf.init();
@@ -52,6 +54,14 @@ int main(){
 	uint8_t blen = 0;
 	
 	while(1){
+		if(millis() - timer > 1000){
+			timer = millis();
+			Serial.println();
+			Serial.print("Local time: ");
+			Serial.print(millis()/1000);
+			Serial.println("s");
+		}
+
 		checkRecv();
 		if(Serial.available()){
 			char ch = Serial.read();
@@ -123,7 +133,7 @@ void checkRecv(){
 		return;
 	}
 
-	Serial.println("Got packet!");
+	Serial.println("\nGot packet!");
 
 	uint8_t data[PAYLOADLEN];
 	uint8_t i;

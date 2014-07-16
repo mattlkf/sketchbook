@@ -4,6 +4,8 @@
 void printPkt(dataPkt * pkt){
 	Serial.print("Packet ");
 	Serial.println(pkt->seqId);
+	Serial.print("Source: ");
+	Serial.println(pkt->srcId);
 
 	Serial.print("Day: ");
 	Serial.println(pkt->day);
