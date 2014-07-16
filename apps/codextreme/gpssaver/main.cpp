@@ -88,18 +88,13 @@ void savePkt(dataPkt * pkt){
 }
 
 void sendPkt(dataPkt * pkt){
-	// pkt->hour = GPS.hour;
-	// pkt->min = GPS.minute;
-	// pkt->sec = GPS.seconds;
-	// pkt->year = GPS.year;
-	// pkt->mth = GPS.month;
-	// pkt->day = GPS.day;
-	// pkt->latitude = GPS.latitude;
-	// pkt->longitude = GPS.longitude;
+	// Serial.print(F("Pkt size: "));
+	// Serial.println(sizeof(*pkt));
+	csock.send(2, (uint8_t *)pkt, sizeof(*pkt));
+	return;
+}
 
-	// pkt->seqId = seqNum;
-	// pkt->srcId = gNodeId;
-
+void sendFakePkt(dataPkt * pkt){
 	pkt->hour = 1;
 	pkt->min = 2;
 	pkt->sec = 3;
@@ -112,9 +107,7 @@ void sendPkt(dataPkt * pkt){
 	pkt->seqId = 9999;
 	pkt->srcId = 12343;
 
-	// Serial.print(F("Pkt size: "));
-	// Serial.println(sizeof(*pkt));
-	csock.send(2, (uint8_t *)pkt, sizeof(*pkt));
+	sendPkt(pkt);
 	return;
 }
 
@@ -269,17 +262,18 @@ int main(){
 				    dataPkt pkt;
 				    makePkt(&pkt);
 				    savePkt(&pkt);
-				    // sendPkt(&pkt);
+				    sendPkt(&pkt);
 				}
 			    else{
 			    	Serial.println("No fix");
+
+				    //testing purposes
+				    dataPkt pkt;
+				    sendFakePkt(&pkt);
+				    Serial.print("Ram: ");
+				    Serial.println(freeRam());
 			    }
 
-			    //testing purposes
-			    dataPkt pkt;
-			    sendPkt(&pkt);
-			    Serial.print("Ram: ");
-			    Serial.println(freeRam());
 
 			}
 			else{
