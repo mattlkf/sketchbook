@@ -62,6 +62,7 @@ int main(){
 
 	while(1){
 		csock.run();
+		checkRecv();
 	}
 	return 0;
 }
