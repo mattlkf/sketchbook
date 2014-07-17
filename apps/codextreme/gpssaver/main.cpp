@@ -12,12 +12,14 @@
 
 #define SD_CS_PIN 10
 
-SoftwareSerial mySerial(3,2); //modified to match my new wiring board
+SoftwareSerial gpsSerial(3,2); //modified to match my new wiring board
+SoftwareSerial cheeseSerial(4,5);
 
+CheeseSock csock(&cheeseSerial);
 
-CheeseSock csock(new SoftwareSerial(4,5));
+void request(const uint8_t *, uint8_t);
 
-Adafruit_GPS GPS(&mySerial);
+Adafruit_GPS GPS(&gpsSerial);
 
 // Set GPSECHO to 'false' to turn off echoing the GPS data to the Serial console
 // Set to 'true' if you want to debug and listen to the raw GPS sentences
@@ -32,6 +34,16 @@ Adafruit_GPS GPS(&mySerial);
 
 uint16_t gNodeId = 1; //a throwback to SnS :D
 uint32_t seqNum = 0;
+
+// OLD PACKET SENDING STUFF
+uint32_t blocks, blocke;
+uint32_t blockTimer = 0;
+
+void sendBlock(uint32_t);
+// END
+
+// SOFTSERIAL RX CONTROL
+uint32_t switchTimer = 0;
 
 File logfile; //for raw GPS serial data
 File datafile; //for processed data
@@ -77,13 +89,20 @@ void makePkt(dataPkt * pkt){
 }
 
 void savePkt(dataPkt * pkt){
+	datafile.seek(datafile.size());
+	uint32_t startpos = datafile.position();
 	uint8_t written = datafile.write((char*)pkt, sizeof(*pkt));
 	datafile.flush();
 	Serial.print(F("Wrote "));
 	Serial.print(sizeof(*pkt));
 	Serial.print("/");
 	Serial.print(written);
-	Serial.println(F(" to file"));
+	Serial.print(F(" to pos ("));
+	Serial.print(startpos);
+	Serial.print(F(","));
+	Serial.print(datafile.position());
+	Serial.println(F(")"));
+
 	return;
 }
 
@@ -208,7 +227,8 @@ void setup(){
   // also spit it out
   Serial.begin(115200);
 
-  csock.begin(9600, 1);
+  csock.registerFn(2, request);
+  csock.begin(9600, 0);
 
   Serial.println(F("setupFile"));
   delay(100);
@@ -231,6 +251,21 @@ int main(){
 	setup();
 
 	while(1){
+		csock.run();
+
+		if(millis() - blockTimer > 5){
+			if(blocke - blocks > 0){
+				sendBlock(blocks++);
+			}
+			blockTimer = millis();
+		}
+
+		if(switchTimer && millis() - switchTimer > 500){
+			csock.send(1, "b");
+			gpsSerial.listen();
+			switchTimer = 0;
+		}
+
 		char c = GPS.read();
 		// if you want to debug, this is a good time to do it!
 		if (GPSECHO)
@@ -269,11 +304,15 @@ int main(){
 
 				    //testing purposes
 				    dataPkt pkt;
+				    savePkt(&pkt);
 				    sendFakePkt(&pkt);
 				    Serial.print(F("Ram: "));
 				    Serial.println(freeRam());
 			    }
 
+			    switchTimer = millis();
+			    cheeseSerial.listen();
+			    csock.send(1, "a");
 
 			}
 			else{
@@ -286,4 +325,54 @@ int main(){
 	}
 
 	return 0;
+}
+
+void request(const uint8_t * str, uint8_t len){
+	if(blocke - blocks > 0){
+		Serial.println(F("Request rejected"));
+		return;
+	}
+
+	// Serial.print(F("Request: "));
+	// for(uint8_t i = 0; i<len;i++){
+	// 	Serial.print(str[i]);
+	// 	Serial.print(" ");
+	// }
+	// Serial.println();
+
+	// Serial.print("Pos: ");
+	// Serial.println(datafile.position());
+	// Serial.print("Size: ");
+	// Serial.println(datafile.size());
+
+	if(len < sizeof(reqPkt)) return;
+
+	const reqPkt * request = (const reqPkt *) str;
+
+	printPkt(request);
+
+	// Serial.println(pkt->s[0]);
+	// Serial.println(sizeof(dataPkt));
+	// Serial.println(pkt->s[0] * sizeof(dataPkt));
+
+	if(request->e[0] < request->s[0]) return;
+	if(sizeof(dataPkt) * request->e[0] >= datafile.size()) return;
+
+	blocks = request->s[0];
+	blocke = request->e[0];
+
+	// Serial.print(F("Reading from "));
+	// Serial.println(datafile.position());
+
+	return;
+}
+
+void sendBlock(uint32_t i){
+	datafile.seek(i * sizeof(dataPkt));
+	dataPkt old;
+	datafile.read(&old, sizeof(dataPkt));
+	printPkt(&old);
+	
+	sendPkt(&old);
+	return;
 }

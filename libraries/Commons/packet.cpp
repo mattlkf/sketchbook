@@ -1,7 +1,7 @@
 #include <packet.h>
 #include <Arduino.h>
 
-void printPkt(dataPkt * pkt){
+void printPkt(const dataPkt * pkt){
 	Serial.print("Packet ");
 	Serial.println(pkt->seqId);
 	Serial.print("Source: ");
@@ -25,6 +25,21 @@ void printPkt(dataPkt * pkt){
 	Serial.print(pkt->latitude, 4);
 	Serial.print(", "); 
 	Serial.println(pkt->longitude, 4);
+
+    return;
+}
+
+void printPkt(const reqPkt * pkt){
+	uint8_t i;
+
+	Serial.println(F("Request packet:"));
+	for(i = 0; i < 4 && pkt->s[i]; i++){
+		Serial.print('(');
+		Serial.print(pkt->s[i]);
+		Serial.print(',');
+		Serial.print(pkt->e[i]);
+		Serial.println(')');
+	}
 
     return;
 }

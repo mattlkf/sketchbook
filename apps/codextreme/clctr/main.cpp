@@ -4,6 +4,7 @@
 #include <nRF24L01.h>
 #include <MirfHardwareSpiDriver.h>
 #include <packet.h>
+#include <stdio.h>
 
 #define MAX_BUF_LEN 40
 #define PAYLOADLEN 32 //max length
@@ -16,6 +17,8 @@ void xmit(const char *, const uint8_t);
 void checkRecv();
 
 uint32_t timer = 0;
+uint32_t pktCount = 0;
+uint32_t pktTotal = 0;
 
 void setupMirf(){
 	Mirf.spi = &MirfHardwareSpi;
@@ -27,6 +30,8 @@ void setupMirf(){
 }
 
 void setup(){
+	pktCount = 0;
+	pktTotal = 0;
 	Serial.begin(115200);
 
 	Serial.println(F("Clctr"));
@@ -41,6 +46,7 @@ void setup(){
 void recv(uint8_t * str, uint8_t len){
 	printPkt((dataPkt *) str);
 
+	++pktCount;
 	return;
 }
 
@@ -57,9 +63,20 @@ int main(){
 		if(millis() - timer > 1000){
 			timer = millis();
 			Serial.println();
-			Serial.print("Local time: ");
+			Serial.print(F("Local time: "));
 			Serial.print(millis()/1000);
 			Serial.println("s");
+
+			//if(pktCount) pktCount--;
+			Serial.print(F("Received "));
+			Serial.print(pktCount);
+			Serial.print(F(" unexpected packets, total "));
+			pktTotal += pktCount;
+			pktCount = 0;
+			Serial.println(pktTotal);
+
+			Serial.print(F("Ram: "));
+			Serial.println(freeRam());
 		}
 
 		checkRecv();
@@ -71,7 +88,7 @@ int main(){
 			
 			if(ch == '\r'){
 				if(flag){
-					Serial.print("Error: max line is ");
+					Serial.print(F("Error: max line is "));
 					Serial.println(MAX_BUF_LEN);
 					flag = 0;
 				}
@@ -98,7 +115,7 @@ int main(){
 void xmit(const char * payload, const uint8_t len){
 	if(len > PAYLOADLEN){
 		Serial.print(len);
-		Serial.println(" bytes; too long");
+		Serial.println(F(" bytes; too long"));
 		return;
 	}
 
@@ -117,14 +134,13 @@ void xmit(const char * payload, const uint8_t len){
 	// 	Serial.println("wait..");
 	// }
 
-	Serial.print("Sent: ");
+	Serial.print(F("Sent: "));
 	for(i = 0;i<PAYLOADLEN;i++)
 		Serial.write(data[i]);
 	Serial.print(" (");
 	Serial.print(len);
-	Serial.println(") bytes");
+	Serial.println(F(") bytes"));
 	// Serial.println();
-
 	return;
 }
 
@@ -133,7 +149,7 @@ void checkRecv(){
 		return;
 	}
 
-	Serial.println("\nGot packet!");
+	Serial.println(F("\nGot packet!"));
 
 	uint8_t data[PAYLOADLEN];
 	uint8_t i;
@@ -162,7 +178,7 @@ int freeRam ()
 
 bool match(const char * a, uint8_t alen, const char * b){
 	//debug
-	Serial.print("Matching ");
+	Serial.print(F("Matching "));
 	for(uint8_t i = 0; i < alen; i++) Serial.print(a[i]);
 	Serial.print(" with ");
 	Serial.println(b);
@@ -198,14 +214,50 @@ void handleLine(char * buf, const uint8_t len){
 
 	if(!advanceIdxPair(buf, len, &s, &t)) return;
 
-	if(match(buf + s, t - s, "hello")){
-		Serial.println("hi :D");
+	if(match(buf + s, t - s, "r")){
+		char tmp;
+		uint32_t ids, ide;
+
+		if(!advanceIdxPair(buf, len, &s, &t)) return;
+		
+		tmp = buf[t];
+		buf[t] = 0;
+		ids = atoi(buf+s);
+		buf[t] = tmp;
+
+		if(!advanceIdxPair(buf, len, &s, &t)) return;
+		
+		tmp = buf[t];
+		buf[t] = 0;
+		ide = atoi(buf+s);
+		buf[t] = tmp;
+
+
+		// for(uint8_t i = s; i<t;i++) Serial.print(buf[i]); Serial.println();
+		
+		reqPkt pkt;
+		pkt.s[0] = ids;
+		pkt.e[0] = ide;
+		pkt.s[1] = 0;
+		pkt.e[1] = 0;
+
+		Serial.print(F("Sending: "));
+		Serial.print(pkt.s[0]);
+		Serial.print('-');
+		Serial.print(pkt.e[0]);
+		Serial.print(F(" pktsize: "));
+		Serial.println(sizeof(pkt));
+
+		xmit((const char *)&pkt, sizeof(pkt));
 	}
 	else if(match(buf + s, t - s, "s")){
 
 		if(!advanceIdxPair(buf, len, &s, &t)) return;
 		
 		xmit(buf + s, t-s);
+	}
+	else if(match(buf + s, t - s, "hello")){
+		Serial.println(F("hi :D"));
 	}
 	return;
 }

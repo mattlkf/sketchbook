@@ -9,4 +9,10 @@ struct dataPkt{
 	float latitude, longitude;
 };
 
-void printPkt(dataPkt * pkt);
+struct reqPkt{
+	uint32_t s[4];
+	uint32_t e[4];
+};
+
+void printPkt(const dataPkt * pkt);
+void printPkt(const reqPkt * pkt);

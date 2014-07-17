@@ -13,15 +13,27 @@
 #define RXNAME "serv1" // 5 bytes
 #define TXNAME "serv1" // 5 bytes
 
+#define MAX_QUEUE_LEN 40
+
 void setupMirf();
 void xmit(const uint8_t *, const uint8_t);
 void checkRecv();
 
+bool canSend = false;
 //end of Mirf stuff
 
+uint8_t queue[MAX_QUEUE_LEN], qlen = 0;
+void flush();
+void enqueue(const uint8_t *, uint8_t);
 
 
 CheeseSock csock(new SoftwareSerial(4,5));
+
+void sendok(const uint8_t * str, uint8_t len){
+	if(str[0] == 'a') canSend = true;
+	if(str[0] == 'b') canSend = false;
+	return;
+}
 
 void callback(const uint8_t * str, uint8_t len){
 #ifdef NETMOD_DEBUG
@@ -47,6 +59,7 @@ void setup(){
 
 	setupMirf();
 
+	csock.registerFn(1, sendok);
 	csock.registerFn(2, callback);
 
 	csock.begin(9600, 0);
@@ -62,6 +75,10 @@ int main(){
 
 	while(1){
 		csock.run();
+		if(canSend){
+			flush();
+		}
+
 		checkRecv();
 	}
 	return 0;
@@ -126,5 +143,27 @@ void checkRecv(){
 	}
 	Serial.println();
 
+	//
+	enqueue(data, MIRF_PAYLOADLEN);
+	
+	return;
+}
+
+void enqueue(const uint8_t * s, uint8_t len){
+	if(len > MAX_QUEUE_LEN) return;
+	if(qlen > 0) return;
+
+	for(uint8_t i = 0;i<len;i++){
+		queue[i] = s[i];
+	}
+
+	qlen = len;
+	return;
+}
+
+void flush(){
+	if(qlen == 0) return;
+	csock.send(2, queue, qlen);
+	qlen = 0;
 	return;
 }

@@ -9,7 +9,7 @@
 
 #include <CheeseSock.h>
 #include <Arduino.h>
- 
+
 const char CheeseSock::preamble[] = "/<" , CheeseSock::postamble[] = "/>";
 
 CheeseSock::CheeseSock(SoftwareSerial * ser){
