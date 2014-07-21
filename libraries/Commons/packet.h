@@ -7,6 +7,8 @@ struct dataPkt{
 	uint8_t hour, min, sec;
 	uint8_t year, mth, day;
 	float latitude, longitude;
+
+	float avgAngle, varVertical;
 };
 
 struct reqPkt{
@@ -15,4 +17,5 @@ struct reqPkt{
 };
 
 void printPkt(const dataPkt * pkt);
+void printPktLine(const dataPkt * pkt);
 void printPkt(const reqPkt * pkt);
