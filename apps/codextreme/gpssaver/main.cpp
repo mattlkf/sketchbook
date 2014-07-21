@@ -10,6 +10,9 @@
 
 //#define LOG_RAW
 
+/* define to only log to SD when GPS has a fix, for debugging, keep it undefined */
+#define LOG_FIXONLY true
+
 #define SD_CS_PIN 10
 
 SoftwareSerial gpsSerial(3,2); //modified to match my new wiring board
@@ -19,6 +22,16 @@ CheeseSock csock(&cheeseSerial);
 
 void request(const uint8_t *, uint8_t);
 
+
+//ACCEL STUFF
+void queryAccel();
+float avgTilt;
+float varZ;
+uint8_t queryAccelFlag;
+void accelRecv(const uint8_t * ,uint8_t);
+//END ACCEL STUFF
+
+
 Adafruit_GPS GPS(&gpsSerial);
 
 // Set GPSECHO to 'false' to turn off echoing the GPS data to the Serial console
@@ -26,13 +39,10 @@ Adafruit_GPS GPS(&gpsSerial);
 #define GPSECHO  true
 #define GPSPRINT true
 
-/* set to true to only log to SD when GPS has a fix, for debugging, keep it false */
-#define LOG_FIXONLY true
-
 #define CONFIG_FILE "config.txt"
 #define DATA_FILE "datapkts.txt"
 
-uint16_t gNodeId = 1; //a throwback to SnS :D
+uint16_t gNodeId = 2; //a throwback to SnS :D
 uint32_t seqNum = 0;
 
 // OLD PACKET SENDING STUFF
@@ -75,6 +85,9 @@ void makePkt(dataPkt * pkt){
 	pkt->day = GPS.day;
 	pkt->latitude = GPS.latitude;
 	pkt->longitude = GPS.longitude;
+
+	pkt->avgAngle = avgTilt;
+	pkt->varVertical = varZ;
 
 	pkt->seqId = seqNum;
 	pkt->srcId = gNodeId;
@@ -122,6 +135,10 @@ void sendFakePkt(dataPkt * pkt){
 	pkt->day = 6;
 	pkt->latitude = 3.14159;
 	pkt->longitude = 1.41;
+
+	pkt->avgAngle = avgTilt;
+	pkt->varVertical = varZ;
+
 
 	pkt->seqId = 9999;
 	pkt->srcId = millis()%1000;
@@ -227,7 +244,12 @@ void setup(){
   // also spit it out
   Serial.begin(115200);
 
+  pinMode(A4, OUTPUT);
+  pinMode(A5, OUTPUT);
+  digitalWrite(A5, HIGH);
+
   csock.registerFn(2, request);
+  csock.registerFn(3, accelRecv);
   csock.begin(9600, 0);
 
   Serial.println(F("setupFile"));
@@ -294,18 +316,26 @@ int main(){
 			    GPS.parse(stringptr);
 
 			    if(GPS.fix){
+			    	digitalWrite(A4, HIGH);
+
 				    dataPkt pkt;
+				    queryAccel();
 				    makePkt(&pkt);
 				    savePkt(&pkt);
 				    sendPkt(&pkt);
 				}
 			    else{
+			    	digitalWrite(A4, LOW);
 			    	Serial.println(F("No fix"));
 
-				    //testing purposes
 				    dataPkt pkt;
+				    queryAccel();
+				    sendFakePkt(&pkt);
+#ifndef LOG_FIXONLY
+				    //only save and send fake packets if in debug mode
 				    savePkt(&pkt);
 				    sendFakePkt(&pkt);
+#endif
 				    Serial.print(F("Ram: "));
 				    Serial.println(freeRam());
 			    }
@@ -356,11 +386,13 @@ void request(const uint8_t * str, uint8_t len){
 	// Serial.println(pkt->s[0] * sizeof(dataPkt));
 
 	if(request->e[0] < request->s[0]) return;
-	if(sizeof(dataPkt) * request->e[0] >= datafile.size()) return;
 
 	blocks = request->s[0];
 	blocke = request->e[0];
 
+	if(sizeof(dataPkt) * request->e[0] >= datafile.size()){
+		blocke = datafile.size() / sizeof(dataPkt);
+	}
 	// Serial.print(F("Reading from "));
 	// Serial.println(datafile.position());
 
@@ -375,4 +407,31 @@ void sendBlock(uint32_t i){
 	
 	sendPkt(&old);
 	return;
+}
+
+void queryAccel(){
+
+	cheeseSerial.listen();
+
+	csock.send(3, "z");
+	queryAccelFlag = 1;
+	uint32_t timeout = millis();
+	while(queryAccelFlag == 1){
+		csock.run();
+		if(millis() - timeout > 20) queryAccelFlag = 2;
+	}
+
+	if(queryAccelFlag == 2) Serial.println(F("Accel timeout"));
+	return;
+}
+
+void accelRecv(const uint8_t * str, uint8_t len){
+	if(len != 8) return;
+	for(uint8_t i = 0; i<4;i++) ((uint8_t *) &avgTilt)[i] = str[i];
+	for(uint8_t i = 4; i<8;i++) ((uint8_t *) &varZ)[i-4] = str[i];
+
+	Serial.print(F("varZ"));
+	Serial.println(varZ);
+
+	queryAccelFlag = 0;
 }
