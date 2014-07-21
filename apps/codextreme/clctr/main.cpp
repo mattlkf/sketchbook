@@ -11,6 +11,11 @@
 #define RXNAME "serv1" // 5 bytes
 #define TXNAME "serv1" // 5 bytes
 
+#define AMMETER_PIN 3
+#define RED_PIN 5
+#define BLUE_PIN 6
+#define GREEN_PIN 9
+
 int freeRam();
 void handleLine(char *, const uint8_t);
 void xmit(const char *, const uint8_t);
@@ -32,19 +37,79 @@ void setupMirf(){
 void setup(){
 	pktCount = 0;
 	pktTotal = 0;
-	Serial.begin(115200);
+	Serial.begin(57600);
 
 	Serial.println(F("Clctr"));
 
 	setupMirf();
 
+	pinMode(AMMETER_PIN, OUTPUT);
+	pinMode(GREEN_PIN, OUTPUT);
+	pinMode(BLUE_PIN, OUTPUT);
+	pinMode(RED_PIN, OUTPUT);
+
 	Serial.println(F("Ready"));
+
+	return;
+}
+void printPktNicely(const dataPkt * pkt){
+
+	Serial.println(F("Date: Requires GPS signal"));
+	Serial.println(F("Location: Requires GPS signal"));
+
+	Serial.print(F("Tilt: "));
+	Serial.println(pkt->avgAngle);
+	Serial.print(F("Bumpiness: "));
+	Serial.println(pkt->varVertical);
+
+}
+
+void displayTilt(const dataPkt * pkt){
+	float correctedAngle = (pkt->avgAngle + 0.72) / 0.72 * 0.8 - 0.72;
+
+	int16_t val = 128 + (correctedAngle / (3.14159/4) * (int16_t) 128);
+	if(val < 0) val = 0;
+	else if (val > 255) val = 255;
+
+	Serial.print("Val: ");
+	Serial.println(val);
+
+	analogWrite(AMMETER_PIN, val);
+
+	return;
+}
+
+void displayBumpiness(const dataPkt * pkt){
+	// zero -> pure blue
+	// above ? -> pure red
+	// perhaps use sqrt function?
+
+	uint8_t red = min(sqrt(pkt->varVertical * 500), 255);
+	uint8_t blue = 255 - red;
+
+	Serial.print("Blue: ");
+	Serial.println(blue);
+	Serial.print("Red: ");
+	Serial.println(red);
+
+	analogWrite(RED_PIN, red);
+	analogWrite(BLUE_PIN, blue);
+	analogWrite(GREEN_PIN, 0);
 
 	return;
 }
 
 void recv(uint8_t * str, uint8_t len){
-	printPkt((dataPkt *) str);
+	if(((dataPkt *) str)->seqId == 9999){
+		printPktNicely((dataPkt *) str);
+	}
+
+	else {
+		printPktLine((dataPkt *) str);
+	}
+
+	displayTilt((dataPkt *) str);
+	displayBumpiness((dataPkt *) str);
 
 	++pktCount;
 	return;
@@ -63,6 +128,7 @@ int main(){
 		if(millis() - timer > 1000){
 			timer = millis();
 			Serial.println();
+			/*
 			Serial.print(F("Local time: "));
 			Serial.print(millis()/1000);
 			Serial.println("s");
@@ -77,6 +143,7 @@ int main(){
 
 			Serial.print(F("Ram: "));
 			Serial.println(freeRam());
+			*/
 		}
 
 		checkRecv();
@@ -149,17 +216,17 @@ void checkRecv(){
 		return;
 	}
 
-	Serial.println(F("\nGot packet!"));
+	Serial.println(F("\nReceived data packet:"));
 
 	uint8_t data[PAYLOADLEN];
 	uint8_t i;
 
 	Mirf.getData(data);
 
-	for(i = 0;i<PAYLOADLEN;i++){
-		Serial.write(data[i]);
-	}
-	Serial.println();
+	// for(i = 0;i<PAYLOADLEN;i++){
+	// 	Serial.write(data[i]);
+	// }
+	// Serial.println();
 
 	recv(data, PAYLOADLEN);
 
