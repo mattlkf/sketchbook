@@ -181,6 +181,17 @@ ARDUINOCONST ?= 100
 AVRTOOLSPATH ?= $(subst :, , $(PATH)) $(ARDUINODIR)/hardware/tools \
 	$(ARDUINODIR)/hardware/tools/avr/bin
 
+# obtain preferences from the IDE's preferences.txt
+PREFERENCESFILE := $(firstword $(wildcard \
+	$(HOME)/.arduino15/preferences.txt $(HOME)/Library/Arduino/preferences.txt))
+ifneq "$(PREFERENCESFILE)" ""
+readpreferencesparam = $(shell sed -ne "s/$(1)=\(.*\)/\1/p" $(PREFERENCESFILE))
+SKETCHBOOKDIR := $(call readpreferencesparam,sketchbook.path)
+$(info HIHI)
+
+$(info SKETCHBOOKDIR now is $(SKETCHBOOKDIR))
+endif
+
 $(info SKETCHBOOKDIR is $(SKETCHBOOKDIR))
 # default path to find libraries
 LIBRARYPATH ?= libraries libs $(SKETCHBOOKDIR)/libraries $(ARDUINODIR)/libraries $(ARDUINODIR)/hardware/arduino/avr/libraries
@@ -221,15 +232,25 @@ BOARD_BOOTLOADER_EFUSES := $(call readboardsparam,bootloader.extended_fuses)
 BOARD_BOOTLOADER_PATH := $(call readboardsparam,bootloader.path)
 BOARD_BOOTLOADER_FILE := $(call readboardsparam,bootloader.file)
 
-# obtain preferences from the IDE's preferences.txt
-PREFERENCESFILE := $(firstword $(wildcard \
-	$(HOME)/.arduino15/preferences.txt $(HOME)/Library/Arduino/preferences.txt))
-ifneq "$(PREFERENCESFILE)" ""
-readpreferencesparam = $(shell sed -ne "s/$(1)=\(.*\)/\1/p" $(PREFERENCESFILE))
-SKETCHBOOKDIR := $(call readpreferencesparam,sketchbook.path)
-$(info HIHI)
-
-$(info SKETCHBOOKDIR now is $(SKETCHBOOKDIR))
+# Matt: if board not found in official Arduino boards.txt, search custom list.
+ifeq "$(BOARD_BUILD_MCU)" ""
+BOARDSFILE := $(SKETCHBOOKDIR)/moreBoards.txt
+$(info BOARDSFILE is $(BOARDSFILE))
+readboardsparam = $(shell sed -ne "s/$(BOARD).$(1)=\(.*\)/\1/p" $(BOARDSFILE))
+BOARD_BUILD_MCU := $(call readboardsparam,build.mcu)
+BOARD_BUILD_FCPU := $(call readboardsparam,build.f_cpu)
+BOARD_BUILD_VARIANT := $(call readboardsparam,build.variant)
+BOARD_UPLOAD_SPEED := $(call readboardsparam,upload.speed)
+BOARD_UPLOAD_PROTOCOL := $(call readboardsparam,upload.protocol)
+BOARD_USB_VID := $(call readboardsparam,build.vid)
+BOARD_USB_PID := $(call readboardsparam,build.pid)
+BOARD_BOOTLOADER_UNLOCK := $(call readboardsparam,bootloader.unlock_bits)
+BOARD_BOOTLOADER_LOCK := $(call readboardsparam,bootloader.lock_bits)
+BOARD_BOOTLOADER_LFUSES := $(call readboardsparam,bootloader.low_fuses)
+BOARD_BOOTLOADER_HFUSES := $(call readboardsparam,bootloader.high_fuses)
+BOARD_BOOTLOADER_EFUSES := $(call readboardsparam,bootloader.extended_fuses)
+BOARD_BOOTLOADER_PATH := $(call readboardsparam,bootloader.path)
+BOARD_BOOTLOADER_FILE := $(call readboardsparam,bootloader.file)
 endif
 
 # invalid board?
