@@ -1,0 +1,62 @@
+Notes on the HC-05 Bluetooth Module:
+
+Basic Setup:
+    Use a FTDI Friend (5v power, 3.3v logic) to connect the HC-05 to the PC.
+        Use "screen /dev/ttyUSB0 9600" to talk to the HC-05. Note that this is a different baud rate from what is stated online, 38400.
+
+    You can use the Android app BlueTerm to connect wirelessly to the HC-05 and see the characters that you type into screen appear on the phone.
+
+    Whenever prompted, the HC-05's PIN is 1234.
+
+
+Connecting your PC to the HC-05 using bluetooth
+    These are the steps I took:
+        1) Used the Ubuntu user-friendly bluetooth wizard to "set up new device". It managed to scan for the HC-05 and when I used the PIN of 1234, it successfully connected.
+
+        2) However, at this point the file /dev/rfcomm0 does not show up, so I googled around for help.
+
+        2.5) You can use "sudo hcitool scan" to scan for bluetooth devices and display the address of the HC-05.
+
+        3) First thing I tried was to edit a config file:
+
+            Command:    
+                sudo nano /etc/bluetooth/rfcomm.conf
+
+            What file looks like after editing it
+                #
+                # RFCOMM configuration file.
+                #
+
+                #rfcomm0 {
+                #   # Automatically bind the device at startup
+                #   bind yes;
+                #
+                #   # Bluetooth address of the device
+                #   device 00:14:03:03:05:75;
+                #
+                #   # RFCOMM channel for the connection
+                #   channel 1;
+                #
+                #   # Description of the connection
+                #   comment "testHC05";
+                #}
+
+            OH I GET IT - it was all commented out!!
+
+        4) Next I created a file, /var/lib/bluetooth/C4:85:08:59:31:51/pincodes, with the following content:
+            00:14:03:03:05:75 1234
+
+            The intended purpose of this is to allow rfcomm to automatically pair with the HC-05.
+
+        5) However, after doing "sudo service bluetooth restart", the desired /dev/rfcomm0 did not appear.
+
+        6) Next, I did it manually:
+            sudo rfcomm bind /dev/rfcomm0 00:14:03:03:05:75 1
+
+            And it /dev/rfcomm0 appeared!!
+
+        7) Next I used echo "test" > /dev/rfcomm0 to test. It worked but there was lag between me running the command and the word appearing on the other side. Also, some weird AT thing was printed out, but I only saw that once.
+
+        8) Next I used screen /dev/rfcomm0 (with no baud rate specified) to talk via bluetooth to the HC-05. It worked like a charm.
+
+
