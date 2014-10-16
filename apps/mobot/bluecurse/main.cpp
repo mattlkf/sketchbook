@@ -23,7 +23,9 @@ int main()
     cbreak();   /* Line buffering disabled. pass on everything */
     
     keypad(stdscr, TRUE);
-    mvprintw(0, 0, "Use arrow keys to go up and down, Press enter to select a choice");
+    mvprintw(0, 0, "Use arrow keys to choose direction of motion");
+    mvprintw(1, 0, "Press the same key to undo your selection");
+    mvprintw(2, 0, "Spacebar switches between high/low speed");
     refresh();
     while(1)
     {   c = getch();
@@ -34,7 +36,7 @@ int main()
                 fputc(' ', pwrite);
                 fflush(pwrite);
 
-                mvprintw(24, 0, "SPEED");
+                mvprintw(5, 0, "SPEED");
                 clrtoeol();
                 break;
 
@@ -42,32 +44,32 @@ int main()
                 fputc('u', pwrite);
                 fflush(pwrite);
 
-                mvprintw(24, 0, "UP");
+                mvprintw(5, 0, "UP");
                 clrtoeol();
                 break;
             case KEY_DOWN:
                 fputc('d', pwrite);
                 fflush(pwrite);
 
-                mvprintw(24, 0, "DOWN");
+                mvprintw(5, 0, "DOWN");
                 clrtoeol();
                 break;
             case KEY_LEFT:
                 fputc('l', pwrite);
                 fflush(pwrite);
 
-                mvprintw(24, 0, "LEFT");
+                mvprintw(5, 0, "LEFT");
                 clrtoeol();
                 break;
             case KEY_RIGHT:
                 fputc('r', pwrite);
                 fflush(pwrite);
 
-                mvprintw(24, 0, "RIGHT");
+                mvprintw(5, 0, "RIGHT");
                 clrtoeol();
                 break;
             default:
-                mvprintw(24, 0, "Charcter pressed is = %3d Hopefully it can be printed as '%c'", c, c);
+                mvprintw(5, 0, "Undefined: %3d '%c'", c, c);
                 clrtoeol();
                 break;
         }
