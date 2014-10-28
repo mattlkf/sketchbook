@@ -1,0 +1,13 @@
+-----
+Oct 28, Tuesday
+
+Took a OMRON 25XOC2 from the Roboclub shelf.
+    It's rated at 240V 20A so it's definitely safe.
+    The lights are 50Ohm, so won't draw more than 2.4A at 120VDC
+    Even if it's 120Vrms, max should be 170V/50 = ~3.3A
+
+    Coil resistance of relay = 28Ohms
+    
+    Will proceed to measure turn-on current
+    Off->On at around 90mA
+    On->Off at around, well, less than 35mA.
