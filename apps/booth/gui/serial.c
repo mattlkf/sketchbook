@@ -13,8 +13,8 @@
 
 int fd = -1;
 char buf[SERIAL_BUF_MAX + 1];
-int n = 0;
-int p = 0;
+int n = 0; // number of characters in buffer
+int p = 0; // pointer to current position in buffer
 
 
 char * serial_read(){
@@ -25,18 +25,34 @@ char * serial_read(){
     return buf;
 }
 
-char serial_nextchar(){
-    while(p >= n){ // while buffer is empty
-        // try refill the buffer
+void serial_fill(){
+    if(p >= n){
         serial_read();
         p = 0;
     }
+}
+
+char serial_nextchar(){
+    // while(p >= n){ // while buffer is empty
+    //     // try refill the buffer
+    //     serial_read();
+    //     p = 0;
+    // }
 
     //drip-feed the buffer
     return buf[p++];
 }
 
-int serial_init(char * tty_dev, char * baud_str){
+int serial_available(){
+    return p < n;
+}
+
+void serial_close(){
+    if(fd != -1) close(fd);
+    else printf("Error: not open; can't close\n");
+}
+
+int serial_init(const char * tty_dev, const char * baud_str){
     int baud;
     sscanf(baud_str, "%d", &baud);
 

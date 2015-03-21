@@ -3,7 +3,10 @@
 #ifndef SERIAL_H
 #define SERIAL_H
 
-char * serial_read();
-int serial_init(char * tty, char * baud);
+void serial_fill();
+char serial_nextchar();
+int serial_available();
+int serial_init(const char * tty, const char * baud);
+void serial_close();
 
 #endif
