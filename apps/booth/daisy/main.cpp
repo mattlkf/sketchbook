@@ -3,7 +3,7 @@
 
 #define np 8
 #define hysterisis 5
-#define thresh 20
+#define thresh 40
 
 uint8_t pin[np] = {A0,A1,A2,A3,A4,A5,A6,A7};
 uint16_t base[np];
@@ -18,17 +18,17 @@ void setup(){
 }
 
 uint32_t diff(uint32_t a, uint32_t b){
-	if(a>b) return a-b;
-	else return b-a;
+	return (a>b) ? a-b : b-a;
 }
 
 void calibrate(){
-	const uint8_t wlen = 6;
-	const uint32_t cthresh = 5;
+	const uint8_t wlen = 6; // length of sliding window
+	const uint32_t cthresh = 5; // calibration stabilization threshold
 
-	uint16_t window[wlen][np];
+	uint16_t window[wlen][np]; // take wlen snapshots of np pins
 	uint8_t i, j, k;
 
+	// zero out array initially
 	for(i=0;i<wlen;i++)
 		for(j=0;j<np;j++)
 			window[i][j] = 0;
@@ -79,7 +79,7 @@ uint8_t on(uint16_t	read, uint16_t pin){
 	if(state[pin] == 0){ // currently off
 		return (read > b + thresh + hysterisis) || (read + thresh + hysterisis < b);
 	}
-	else{
+	else{ // if currently on, the criteria to be considered still on is relaxed
 		return (read > b + thresh) || (read + thresh < b);
 	}
 }
@@ -90,8 +90,6 @@ int main(){
 
 	calibrate();
 	uint8_t i;
-
-	
 
 	Serial.println("---Calibrated baselines---");
 	for(i=0;i<np;i++){

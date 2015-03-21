@@ -1,0 +1,5 @@
+This doesn't yet have the Arduinos talking to each other. This is just to test a single Arduino: whether we can detect the on-off of the Hall Effect sensors reliably.
+
+One issue we encountered here is that, at startup time, it takes a while for the Hall effect sensors to stabilise. Hence, we cannot take the initial voltage of the sensor as the baseline voltage. Instead, we keep taking measurements (sliding window) until the current measurement is roughly the same as the last few measurements.
+
+We use hysterisis to do debouncing in software. Once a sensor goes HIGH, it needs to dip significantly in order to be considered LOW again. (Once you're in, it's easy to stay in - this prevents the many transitions in a small span of time associated with bounciness.)
