@@ -1,5 +1,7 @@
 // To compile, first install libncurses5-dev
 // sudo apt-get install libncurses5-dev
+//
+// Then use: gcc main.cpp -lncurses
 
 #include <stdio.h>
 #include <ncurses.h>
