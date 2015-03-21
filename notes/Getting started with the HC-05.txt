@@ -10,6 +10,9 @@ Basic Setup:
 
 
 Connecting your PC to the HC-05 using bluetooth
+
+*Simple way: sudo rfcomm bind /dev/rfcomm0 00:14:03:03:05:75 1
+
     These are the steps I took:
         1) Used the Ubuntu user-friendly bluetooth wizard to "set up new device". It managed to scan for the HC-05 and when I used the PIN of 1234, it successfully connected.
 
@@ -55,7 +58,7 @@ Connecting your PC to the HC-05 using bluetooth
 
             And it /dev/rfcomm0 appeared!!
 
-        7) Next I used echo "test" > /dev/rfcomm0 to test. It worked but there was lag between me running the command and the word appearing on the other side. Also, some weird AT thing was printed out, but I only saw that once.
+        7) Next I used echo "test" > /dev/rfcomm0 to test. It worked but there was lag between me running the command and the word appearing on the other side. Also, some weird AT thing was printed out, but I only saw that once. (think it was AT+GCAP)
 
         8) Next I used screen /dev/rfcomm0 (with no baud rate specified) to talk via bluetooth to the HC-05. It worked like a charm.
 
