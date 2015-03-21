@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 
+// #define VERBOSE
+
 #define np 8
 #define hysterisis 5
 #define thresh 40
@@ -10,11 +12,14 @@ uint16_t base[np];
 uint8_t state[np];
 
 void setup(){
-	Serial.begin(9600);
-	Serial.println("Hi!");
+	Serial.begin(57600);
 
 	uint8_t i;
 	for(i=0;i<np;i++) state[i] = 0;
+	
+#ifdef VERBOSE
+	Serial.println("Hi!");
+#endif
 }
 
 uint32_t diff(uint32_t a, uint32_t b){
@@ -24,6 +29,7 @@ uint32_t diff(uint32_t a, uint32_t b){
 void calibrate(){
 	const uint8_t wlen = 6; // length of sliding window
 	const uint32_t cthresh = 5; // calibration stabilization threshold
+	const uint16_t sample_period = 250; // delay between successive calib. measurements
 
 	uint16_t window[wlen][np]; // take wlen snapshots of np pins
 	uint8_t i, j, k;
@@ -36,8 +42,11 @@ void calibrate(){
 	for(i=0;i<wlen;i = (i+1) % wlen){
 		for(j=0;j<np;j++){
 			window[i][j] = analogRead(pin[j]);
+
+#ifdef VERBOSE
 			Serial.print(window[i][j]);
 			Serial.print('\t');
+#endif
 		}
 
 		for(j=0;j<np;j++){
@@ -52,25 +61,26 @@ void calibrate(){
 		}
 
 		if(j == np){
-			Serial.println("Stable!");
 			for(j=0;j<np;j++){
 				base[j] = window[i][j];
 			}
+#ifdef VERBOSE
+			Serial.println("Stable!");
+#endif
 			break;
 		}
 		else{
+#ifdef VERBOSE
 			Serial.println();
-		}
-		
-		delay(250);
+#endif
+		}	
+		delay(sample_period);
 	}
 }
 
 
 void send(uint8_t ch){
-	// Serial.print("hi! ");
-	// Serial.write(ch + '0');
-	// Serial.println();
+	Serial.write(ch);
 }
 
 uint8_t on(uint16_t	read, uint16_t pin){
@@ -91,14 +101,14 @@ int main(){
 	calibrate();
 	uint8_t i;
 
+#ifdef VERBOSE
 	Serial.println("---Calibrated baselines---");
 	for(i=0;i<np;i++){
 		Serial.print(base[i]);
 		Serial.print("\t");
 	}
 	Serial.println();
-
-	// delay(1000);
+#endif
 
 	while(1){
 		for(i=0;i<np;i++){
@@ -111,27 +121,22 @@ int main(){
 			if(state[i] == 0 && on(val, i)){
 				state[i] = 1;
 				send(i*2);
+
+#ifdef VERBOSE
 				Serial.print("On: ");
-				Serial.print(i);
-				// Serial.print("Val: ");
-				// Serial.print(val);
-				// Serial.print(" Base: ");
-				// Serial.print(base[i]);
-				Serial.println();
+				Serial.println(i);
+#endif
 			}
 			else if(state[i] == 1 && !on(val, i)){
 				state[i] = 0;
 				send(i*2+1);
+
+#ifdef VERBOSE
 				Serial.print("Off: ");
-				Serial.print(i);
-				// Serial.print("Val: ");
-				// Serial.print(val);
-				// Serial.print(" Base: ");
-				// Serial.print(base[i]);
-				Serial.println();
+				Serial.println(i);
+#endif
 			}
 		}
-		// Serial.println();
 		delay(250);
 	}
 	return 0;
