@@ -49,3 +49,32 @@ pro_5V.bootloader.file=atmega/ATmegaBOOT_168_atmega328.hex
 
 pro_5V.build.mcu=atmega328p
 pro_5V.build.f_cpu=16000000L
+
+## Arduino Nano w/ ATmega328
+## -------------------------
+nano.name=Arduino Nano
+
+nano.upload.tool=avrdude
+nano.upload.protocol=arduino
+
+nano.bootloader.tool=avrdude
+nano.bootloader.unlock_bits=0x3F
+nano.bootloader.lock_bits=0x0F
+
+nano.build.f_cpu=16000000L
+nano.build.board=AVR_NANO
+nano.build.core=arduino
+nano.build.variant=eightanaloginputs
+
+nano.menu.cpu.atmega328=ATmega328
+
+nano.menu.cpu.atmega328.upload.maximum_size=30720
+nano.menu.cpu.atmega328.upload.maximum_data_size=2048
+nano.menu.cpu.atmega328.upload.speed=57600
+
+nano.menu.cpu.atmega328.bootloader.low_fuses=0xFF
+nano.menu.cpu.atmega328.bootloader.high_fuses=0xDA
+nano.menu.cpu.atmega328.bootloader.extended_fuses=0x05
+nano.menu.cpu.atmega328.bootloader.file=atmega/ATmegaBOOT_168_atmega328.hex
+
+nano.menu.cpu.atmega328.build.mcu=atmega328p

@@ -55,14 +55,14 @@ int main()
                 clrtoeol();
                 break;
             case KEY_LEFT:
-                fputc('l', pwrite);
+                fputc('r', pwrite);
                 fflush(pwrite);
 
                 mvprintw(5, 0, "LEFT");
                 clrtoeol();
                 break;
             case KEY_RIGHT:
-                fputc('r', pwrite);
+                fputc('l', pwrite);
                 fflush(pwrite);
 
                 mvprintw(5, 0, "RIGHT");

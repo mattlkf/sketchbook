@@ -1,4 +1,4 @@
 SOURCES := main.cpp
-LIBRARIES := Narcoleptic
-BOARD := pro_3V
+LIBRARIES := SoftwareSerial
+BOARD := pro_5V
 include ../../../arduino.mk

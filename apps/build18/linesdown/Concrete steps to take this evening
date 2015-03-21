@@ -1,0 +1,5 @@
+Concrete steps to take this evening
+
+1. Turn off debug messages in linesdown to see if that reduces jerkiness
+2. Measure time taken for one handshake (insert calls to micros())
+3. Make the delay adjustable by knob -> try change speeds

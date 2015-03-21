@@ -1,9 +1,9 @@
 #include <Arduino.h>
 
-const uint8_t dir_left_pin = 2;
+const uint8_t dir_left_pin = 4;
 const uint8_t en_left_pin = 5;
 const uint8_t en_right_pin = 6;
-const uint8_t dir_right_pin = 4;
+const uint8_t dir_right_pin = 7;
 
 uint8_t dir_left = 0;
 uint8_t dir_right = 0;
@@ -49,28 +49,28 @@ void loop(){
                 dir_right = 0;
                 en_left = 1;
                 en_right = 1;
-                // Serial.println("Forward");
+                Serial.println("Forward");
             }
             else if(ch == 'd'){
                 dir_left = 1;
                 dir_right = 1;
                 en_left = 1;
                 en_right = 1;
-                // Serial.println("Backward");
+                Serial.println("Backward");
             }
             else if(ch == 'r'){ 
                 dir_left = 1;
                 dir_right = 0;
                 en_left = 1;
                 en_right = 1;
-                // Serial.println("Left");
+                Serial.println("Left");
             }
             else if(ch == 'l'){
                 dir_left = 0;
                 dir_right = 1;
                 en_left = 1;
                 en_right = 1;
-                // Serial.println("Right");
+                Serial.println("Right");
             }
          }
         Serial.println();
