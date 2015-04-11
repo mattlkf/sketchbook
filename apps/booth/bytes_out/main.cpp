@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
 void setup(){
-	Serial.begin(115200);
+	Serial.begin(9600);
 }
 
 int main(){
@@ -9,9 +9,9 @@ int main(){
 
 	setup();
 
-	uint8_t	i = 60;
+	uint8_t	i = 0;
 	while(1){
-		delay(1000);
+		delay(100);
 		i++;
 		Serial.write(i);
 	}

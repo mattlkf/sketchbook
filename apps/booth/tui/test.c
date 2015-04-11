@@ -1,3 +1,6 @@
+// Compile with: gcc test.c serial.c -o test
+
+
 #include <stdio.h>
 #include "serial.h"
 #include <stdint.h>
@@ -29,7 +32,7 @@ int main(){
     signal(SIGINT, sig_handler);
 
     // SERIAL
-    serial_init("/dev/ttyUSB0", "57600");
+    serial_init("/dev/ttyUSB0", "9600");
 
     int i = 0;
     while(1){

@@ -1,7 +1,7 @@
 // To compile, first install libncurses5-dev
 // sudo apt-get install libncurses5-dev
 //
-// Then use: gcc main.cpp -lncurses
+// Then use: gcc main.c serial.c -lncurses
 
 #include <stdio.h>
 #include <unistd.h>
@@ -42,12 +42,12 @@ void printArray(){
     const int gap = 2;
     // First row
     for(i=0;i < nsensors;i+=2){
-        mvprintw(scr_y/2 - 2, i * gap, "%c", onstate[i] ? 'X' : '_');
+        mvprintw(scr_y/2 - 2, scr_x - 4 - (i * gap), "%c", onstate[i] ? 'X' : '_');
     }           
 
     // Second row
     for(i=0;i+1 < nsensors;i+=2){
-        mvprintw(scr_y/2 + 1, i * gap, "%c", onstate[i+1] ? 'X' : '_');
+        mvprintw(scr_y/2 + 1, scr_x - 4 - (i * gap), "%c", onstate[i+1] ? 'X' : '_');
     }           
 
 }
@@ -62,7 +62,7 @@ int main(){
     curs_set(false); // Don't display a cursor
 
     // SERIAL
-    serial_init("/dev/ttyUSB0", "57600");
+    serial_init("/dev/ttyUSB0", "9600");
 
     while(1){
         clear(); // clear the screen
@@ -72,6 +72,7 @@ int main(){
         serial_fill();
         if(serial_available()){
             uint8_t read = serial_nextchar();
+            read -= 20;
             // mvprintw(0,0,"Read %d", read);
             if(read < nsensors * 2){
                 //update the sensor state array

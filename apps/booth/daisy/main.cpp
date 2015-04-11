@@ -7,12 +7,41 @@
 #define hysterisis 5
 #define thresh 40
 
+// Pin variables
 uint8_t pin[np] = {A0,A1,A2,A3,A4,A5,A6,A7};
 uint16_t base[np];
 uint8_t state[np];
+/*
+0  1  2  3		  		 6  4  2  0
+		  ----pinmap---> 
+4  5  6  7		  		 7  5  3  1
+*/
+const uint8_t pinmap[np] = {6,4,2,0,7,5,3,1};
+
+// SoftwareSerial for message forwarding
+SoftwareSerial daisySerial(2,3); // 2 is RX, 3 is TX
+
+void forwardMessages(){
+	if(daisySerial.available()){
+		uint8_t ch = daisySerial.read();
+		uint8_t offset = np * 2;
+		// if(ch == 3) Serial.write(100);
+		// Serial.write(ch);
+		Serial.write(ch + offset + 20);
+	}
+}
+
+uint8_t onCode(uint8_t i){
+	return pinmap[i] * 2 + 1;
+}
+
+uint8_t offCode(uint8_t i){
+	return pinmap[i] * 2;
+}
 
 void setup(){
-	Serial.begin(57600);
+	Serial.begin(9600);
+	daisySerial.begin(9600);
 
 	uint8_t i;
 	for(i=0;i<np;i++) state[i] = 0;
@@ -80,7 +109,7 @@ void calibrate(){
 
 
 void send(uint8_t ch){
-	Serial.write(ch);
+	Serial.write(ch + 20);
 }
 
 uint8_t on(uint16_t	read, uint16_t pin){
@@ -111,16 +140,16 @@ int main(){
 #endif
 
 	while(1){
-		for(i=0;i<np;i++){
-			delay(10);
-			uint16_t val = analogRead(pin[i]);
+		// Check for messages to forward and do so, if any
+		forwardMessages();
 
-			// Serial.print(val);
-			// Serial.print('\t');
+		for(i=0;i<np;i++){
+			// delay(10);
+			uint16_t val = analogRead(pin[i]);
 
 			if(state[i] == 0 && on(val, i)){
 				state[i] = 1;
-				send(i*2);
+				send(onCode(i));
 
 #ifdef VERBOSE
 				Serial.print("On: ");
@@ -129,7 +158,7 @@ int main(){
 			}
 			else if(state[i] == 1 && !on(val, i)){
 				state[i] = 0;
-				send(i*2+1);
+				send(offCode(i));
 
 #ifdef VERBOSE
 				Serial.print("Off: ");
@@ -137,7 +166,7 @@ int main(){
 #endif
 			}
 		}
-		delay(250);
+		// delay(250);
 	}
 	return 0;
 }
