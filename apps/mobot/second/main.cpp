@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
 const uint8_t dir_left_pin = 4;
-const uint8_t en_left_pin = 5;
+const uint8_t en_left_pin = 3;
 const uint8_t en_right_pin = 6;
 const uint8_t dir_right_pin = 7;
 

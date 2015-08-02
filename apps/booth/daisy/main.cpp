@@ -4,8 +4,8 @@
 // #define VERBOSE
 
 #define np 8
-#define hysterisis 5
-#define thresh 40
+#define hysterisis 2
+#define thresh 6
 
 // Pin variables
 uint8_t pin[np] = {A0,A1,A2,A3,A4,A5,A6,A7};
@@ -27,7 +27,7 @@ void forwardMessages(){
 		uint8_t offset = np * 2;
 		// if(ch == 3) Serial.write(100);
 		// Serial.write(ch);
-		Serial.write(ch + offset + 20);
+		Serial.write(ch + offset);
 	}
 }
 
@@ -150,7 +150,8 @@ int main(){
 			if(state[i] == 0 && on(val, i)){
 				state[i] = 1;
 				send(onCode(i));
-
+				send(onCode(i-4)); // simulate two sensors
+					
 #ifdef VERBOSE
 				Serial.print("On: ");
 				Serial.println(i);
@@ -159,6 +160,7 @@ int main(){
 			else if(state[i] == 1 && !on(val, i)){
 				state[i] = 0;
 				send(offCode(i));
+				send(offCode(i-4)); // simulate two sensors
 
 #ifdef VERBOSE
 				Serial.print("Off: ");

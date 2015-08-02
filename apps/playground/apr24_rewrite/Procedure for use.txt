@@ -1,0 +1,5 @@
+Procedure for use:
+1) Turn on supply to sensors (plug in the 9V supply)
+2) Turn on the Arduino (plug in the USB cable from the Arduino to the logging PC). Then, on the logging PC, start the logging (e.g. "cat /dev/ttyUSB0 | tee logfile.txt").
+    - This will cause calibration to begin. At time of writing total calib time is 5 seconds.
+3) Plug in the Raspberry Pi.
