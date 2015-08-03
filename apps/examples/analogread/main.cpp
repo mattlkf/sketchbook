@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-#define PIN A4
+#define PIN A5
 
 int main(){
     init();

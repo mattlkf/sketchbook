@@ -1,0 +1,64 @@
+Notes on testing:
+
+################ Using nrf_press_to_send ##############
+
+-- Speedtest --
+A quick, unscientific test was conducted as follows:
+1) I held down the 'enter' key on the transmitter and logged the output of the receiver.
+2) The log showed 125 lines, starting with "time: 1206" and ending with "time: 5316"
+3) This gives the following results.
+
+    Time per packet:    32.88 ms
+    Packets per sec:    30.41
+    Data rate:          0.973 kb/s
+
+Note that the timing is undoubtedly affected by the time required to print stuff to the screen, etc.
+The baud rate was 9600 between each Arduino and the PC.
+
+-- Speedtest, with adjusted baudrates --
+
+Same as above except with baudrates set to 115200
+
+(50710 - 43980) / 185 = 36.38 ms    <-- even worse!!
+
+Hmm. It could be because when I spam the enter key, it is sending many characters to the Arduino's serial buffer that the Arduino needs to spend time clearing. The effect is worsened at a higher baud rate.
+
+################ Using nrf_send_continuously ##############
+
+I wrote this program to remove external effects and also for use later when testing broadcasting of messages.
+
+-- First test: pure speed, one sender one receiver --
+
+Gosh, that was fast. I used a standard receiver from nrf_press_to_send and the transmitter a simple send_continuously. 
+
+(20877 - 20178) / 300 = 2.33 ms    <-- fast!!
+
+    Time per packet:    2.33 ms
+    Packets per sec:    429.2
+    Data rate:          13.734 kb/s
+
+-- Second test: one battery-powered sender, two receivers --
+
+(10147 - 0) / 5112 = 1.98 ms    <-- fast!!
+
+    Time per packet:    1.98 ms
+    Packets per sec:    503
+    Data rate:          16.121 kb/s
+
+Interestingly there was only one packet that only receiver A got.
+
+I need to implement sequence numbers.
+
+-- Third test --
+
+Something went wrong with snprintf: the millis() value wasn't printed
+
+Still, the sequence numbers got through just fine.
+
+Pleased to see that each of the 5073 packets sent got to both receivers.
+
+###### Testing the OLED I2C display #######
+
+Pleased to note that the display actually works. 
+
+Need to use I2C address of 0x3C not 0x78.

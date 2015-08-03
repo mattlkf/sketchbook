@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<!-- saved from url=(0080)http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#init.28.29 -->
+<html lang="en" dir="ltr" class="client-chrome client-chrome-4 client-webkit client-linux"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<title>I2C OLED Panel(128x64) - GOF_Wiki
+I2C OLED Panel(128x64) - Open Source,Open Minded</title>
+<meta name="generator" content="MediaWiki 1.17.0">
+<link rel="shortcut icon" href="http://www.geekonfire.com/favicon.ico">
+<link rel="search" type="application/opensearchdescription+xml" href="http://www.geekonfire.com/wiki/opensearch_desc.php" title="GOF_Wiki (en)">
+<link rel="EditURI" type="application/rsd+xml" href="http://www.geekonfire.com/wiki/api.php?action=rsd">
+<link rel="alternate" type="application/atom+xml" title="GOF_Wiki Atom feed" href="http://www.geekonfire.com/wiki/index.php?title=Special:RecentChanges&feed=atom">
+<link rel="stylesheet" href="http://www.geekonfire.com/wiki/load.php?debug=false&lang=en&modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.vector&only=styles&skin=vector&*">
+<meta name="ResourceLoaderDynamicStyles" content="">
+<style type="text/css">
+/**
+ * GeSHi Dynamically Generated Stylesheet
+ * --------------------------------------
+ * Dynamically generated stylesheet for cpp
+ * CSS class: source-cpp, CSS id: 
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ * --------------------------------------
+ */
+.cpp.source-cpp .de1, .cpp.source-cpp .de2 {font: normal normal 1em/1.2em monospace; margin:0; padding:0; background:none; vertical-align:top;}
+.cpp.source-cpp  {font-family:monospace;}
+.cpp.source-cpp .imp {font-weight: bold; color: red;}
+.cpp.source-cpp li, .cpp.source-cpp .li1 {font-weight: normal; vertical-align:top;}
+.cpp.source-cpp .ln {width:1px;text-align:right;margin:0;padding:0 2px;vertical-align:top;}
+.cpp.source-cpp .li2 {font-weight: bold; vertical-align:top;}
+.cpp.source-cpp .kw1 {color: #0000ff;}
+.cpp.source-cpp .kw2 {color: #0000ff;}
+.cpp.source-cpp .kw3 {color: #0000dd;}
+.cpp.source-cpp .kw4 {color: #0000ff;}
+.cpp.source-cpp .co1 {color: #666666;}
+.cpp.source-cpp .co2 {color: #339900;}
+.cpp.source-cpp .coMULTI {color: #ff0000; font-style: italic;}
+.cpp.source-cpp .es0 {color: #000099; font-weight: bold;}
+.cpp.source-cpp .es1 {color: #000099; font-weight: bold;}
+.cpp.source-cpp .es2 {color: #660099; font-weight: bold;}
+.cpp.source-cpp .es3 {color: #660099; font-weight: bold;}
+.cpp.source-cpp .es4 {color: #660099; font-weight: bold;}
+.cpp.source-cpp .es5 {color: #006699; font-weight: bold;}
+.cpp.source-cpp .br0 {color: #008000;}
+.cpp.source-cpp .sy0 {color: #008000;}
+.cpp.source-cpp .sy1 {color: #000080;}
+.cpp.source-cpp .sy2 {color: #000040;}
+.cpp.source-cpp .sy3 {color: #000040;}
+.cpp.source-cpp .sy4 {color: #008080;}
+.cpp.source-cpp .st0 {color: #FF0000;}
+.cpp.source-cpp .nu0 {color: #0000dd;}
+.cpp.source-cpp .nu6 {color: #208080;}
+.cpp.source-cpp .nu8 {color: #208080;}
+.cpp.source-cpp .nu12 {color: #208080;}
+.cpp.source-cpp .nu16 {color:#800080;}
+.cpp.source-cpp .nu17 {color:#800080;}
+.cpp.source-cpp .nu18 {color:#800080;}
+.cpp.source-cpp .nu19 {color:#800080;}
+.cpp.source-cpp .me1 {color: #007788;}
+.cpp.source-cpp .me2 {color: #007788;}
+.cpp.source-cpp .ln-xtra, .cpp.source-cpp li.ln-xtra, .cpp.source-cpp div.ln-xtra {background-color: #ffc;}
+.cpp.source-cpp span.xtra { display:block; }
+
+.source-cpp {line-height: normal;}
+.source-cpp li, .source-cpp pre {
+	line-height: normal; border: 1px dashed #2f6fab;
+}
+.cpp.source-cpp .de1, .cpp.source-cpp .de2 {
+	padding:10px;
+}
+
+</style><style type="text/css"></style>
+<style type="text/css">/*<![CDATA[*/
+@import "/wiki/index.php?title=MediaWiki:Geshi.css&usemsgcache=yes&action=raw&ctype=text/css&smaxage=18000";
+/*]]>*/
+</style><!--[if lt IE 7]><style type="text/css">body{behavior:url("/wiki/skins/vector/csshover.min.htc")}</style><![endif]--></head>
+<body class="mediawiki ltr ns-0 ns-subject page-I2C_OLED_Panel_128x64 skin-vector">
+		<div id="mw-page-base" class="noprint"></div>
+		<div id="mw-head-base" class="noprint"></div>
+		<!-- content -->
+		<div id="content">
+			<a id="top"></a>
+			<div id="mw-js-message" style="display:none;"></div>
+						<!-- firstHeading -->
+			<h1 id="firstHeading" class="firstHeading">I2C OLED Panel(128x64)</h1>
+			<!-- /firstHeading -->
+			<!-- bodyContent -->
+			<div id="bodyContent">
+				<!-- tagline -->
+				<div id="siteSub">From GOF_Wiki</div>
+				<!-- /tagline -->
+				<!-- subtitle -->
+				<div id="contentSub"></div>
+				<!-- /subtitle -->
+																<!-- jumpto -->
+				<div id="jump-to-nav">
+					Jump to: <a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#mw-head">navigation</a>,
+					<a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#p-search">search</a>
+				</div>
+				<!-- /jumpto -->
+								<!-- bodytext -->
+				<table id="toc" class="toc"><tbody><tr><td><div id="toctitle"><h2>Contents</h2> <span class="toctoggle">[<a id="togglelink" class="internal" href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#">hide</a>]</span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#Introduction"><span class="tocnumber">1</span> <span class="toctext">Introduction</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#Features"><span class="tocnumber">2</span> <span class="toctext">Features</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#Specifications"><span class="tocnumber">3</span> <span class="toctext">Specifications</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#Pins_Definition_and_Rating"><span class="tocnumber">4</span> <span class="toctext">Pins Definition and Rating</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#Application_Ideas"><span class="tocnumber">5</span> <span class="toctext">Application Ideas</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#Example_Demonstrations"><span class="tocnumber">6</span> <span class="toctext">Example Demonstrations</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#Cautions"><span class="tocnumber">7</span> <span class="toctext">Cautions</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#Hardware_Diagram"><span class="tocnumber">8</span> <span class="toctext">Hardware Diagram</span></a></li>
+<li class="toclevel-1 tocsection-9"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#Getting_Started"><span class="tocnumber">9</span> <span class="toctext">Getting Started</span></a>
+<ul>
+<li class="toclevel-2 tocsection-10"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#Graphic_Display_Data_RAM_.28GDDRAM.29"><span class="tocnumber">9.1</span> <span class="toctext">Graphic Display Data RAM (GDDRAM)</span></a></li>
+<li class="toclevel-2 tocsection-11"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#Memory_Addressing_Mode.28Command:_20h.29"><span class="tocnumber">9.2</span> <span class="toctext">Memory Addressing Mode(Command: 20h)</span></a>
+<ul>
+<li class="toclevel-3 tocsection-12"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#Page_addressing_Mode.28Command:_0x02.2C_default.28reset.29.29"><span class="tocnumber">9.2.1</span> <span class="toctext">Page addressing Mode(Command: 0x02, default(reset))</span></a></li>
+<li class="toclevel-3 tocsection-13"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#Horizontal_addressing_Mode.28Command:_0x00.29"><span class="tocnumber">9.2.2</span> <span class="toctext">Horizontal addressing Mode(Command: 0x00)</span></a></li>
+<li class="toclevel-3 tocsection-14"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#Vertical_addressing_Mode.28Command:_0x01.29"><span class="tocnumber">9.2.3</span> <span class="toctext">Vertical addressing Mode(Command: 0x01)</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-15"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#Slave_Address"><span class="tocnumber">9.3</span> <span class="toctext">Slave Address</span></a></li>
+<li class="toclevel-2 tocsection-16"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#Write_Data"><span class="tocnumber">9.4</span> <span class="toctext">Write Data</span></a>
+<ul>
+<li class="toclevel-3 tocsection-17"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#Command_Mode"><span class="tocnumber">9.4.1</span> <span class="toctext">Command Mode</span></a></li>
+<li class="toclevel-3 tocsection-18"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#Data_Mode"><span class="tocnumber">9.4.2</span> <span class="toctext">Data Mode</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-19"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#Charge_Pump_Setting.28Command:_0x8D.29"><span class="tocnumber">9.5</span> <span class="toctext">Charge Pump Setting(Command: 0x8D)</span></a></li>
+<li class="toclevel-2 tocsection-20"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#GOFi2cOLED_Library"><span class="tocnumber">9.6</span> <span class="toctext">GOFi2cOLED Library</span></a>
+<ul>
+<li class="toclevel-3 tocsection-21"><a href="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded.html"><span class="tocnumber">9.6.1</span> <span class="toctext">init()</span></a></li>
+<li class="toclevel-3 tocsection-22"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#sendCommand.28.29"><span class="tocnumber">9.6.2</span> <span class="toctext">sendCommand()</span></a></li>
+<li class="toclevel-3 tocsection-23"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#sendData.28.29"><span class="tocnumber">9.6.3</span> <span class="toctext">sendData()</span></a></li>
+<li class="toclevel-3 tocsection-24"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#setNormalDisplay.28.29"><span class="tocnumber">9.6.4</span> <span class="toctext">setNormalDisplay()</span></a></li>
+<li class="toclevel-3 tocsection-25"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#setInverseDisplay.28.29"><span class="tocnumber">9.6.5</span> <span class="toctext">setInverseDisplay()</span></a></li>
+<li class="toclevel-3 tocsection-26"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#setCursor.28.29"><span class="tocnumber">9.6.6</span> <span class="toctext">setCursor()</span></a></li>
+<li class="toclevel-3 tocsection-27"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#setBrightness.28.29"><span class="tocnumber">9.6.7</span> <span class="toctext">setBrightness()</span></a></li>
+<li class="toclevel-3 tocsection-28"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#setTextSize.28.29"><span class="tocnumber">9.6.8</span> <span class="toctext">setTextSize()</span></a></li>
+<li class="toclevel-3 tocsection-29"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#setTextColor.28.29"><span class="tocnumber">9.6.9</span> <span class="toctext">setTextColor()</span></a></li>
+<li class="toclevel-3 tocsection-30"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#setTextWrap.28.29"><span class="tocnumber">9.6.10</span> <span class="toctext">setTextWrap()</span></a></li>
+<li class="toclevel-3 tocsection-31"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#setRotation.28.29"><span class="tocnumber">9.6.11</span> <span class="toctext">setRotation()</span></a></li>
+<li class="toclevel-3 tocsection-32"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#getRotation.28.29"><span class="tocnumber">9.6.12</span> <span class="toctext">getRotation()</span></a></li>
+<li class="toclevel-3 tocsection-33"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#setPageMode.28.29"><span class="tocnumber">9.6.13</span> <span class="toctext">setPageMode()</span></a></li>
+<li class="toclevel-3 tocsection-34"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#setHorizontalMode.28.29"><span class="tocnumber">9.6.14</span> <span class="toctext">setHorizontalMode()</span></a></li>
+<li class="toclevel-3 tocsection-35"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#setVerticalMode.28.29"><span class="tocnumber">9.6.15</span> <span class="toctext">setVerticalMode()</span></a></li>
+<li class="toclevel-3 tocsection-36"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#clearDisplay.28.29"><span class="tocnumber">9.6.16</span> <span class="toctext">clearDisplay()</span></a></li>
+<li class="toclevel-3 tocsection-37"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#clearArea.28.29"><span class="tocnumber">9.6.17</span> <span class="toctext">clearArea()</span></a></li>
+<li class="toclevel-3 tocsection-38"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#width.28.29"><span class="tocnumber">9.6.18</span> <span class="toctext">width()</span></a></li>
+<li class="toclevel-3 tocsection-39"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#height.28.29"><span class="tocnumber">9.6.19</span> <span class="toctext">height()</span></a></li>
+<li class="toclevel-3 tocsection-40"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#print.28.29_and_println.28.29"><span class="tocnumber">9.6.20</span> <span class="toctext">print() and println()</span></a></li>
+<li class="toclevel-3 tocsection-41"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#drawPixel.28.29"><span class="tocnumber">9.6.21</span> <span class="toctext">drawPixel()</span></a></li>
+<li class="toclevel-3 tocsection-42"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#drawChar.28.29"><span class="tocnumber">9.6.22</span> <span class="toctext">drawChar()</span></a></li>
+<li class="toclevel-3 tocsection-43"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#drawLine.28.29.2C_drawFastHLine.28.29_and_drawFastVLine.28.29"><span class="tocnumber">9.6.23</span> <span class="toctext">drawLine(), drawFastHLine() and drawFastVLine()</span></a></li>
+<li class="toclevel-3 tocsection-44"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#drawRect.28.29_or_fillRect.28.29"><span class="tocnumber">9.6.24</span> <span class="toctext">drawRect() or fillRect()</span></a></li>
+<li class="toclevel-3 tocsection-45"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#drawRoundRect.28.29_or_fillRoundRect.28.29"><span class="tocnumber">9.6.25</span> <span class="toctext">drawRoundRect() or fillRoundRect()</span></a></li>
+<li class="toclevel-3 tocsection-46"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#drawTriangle.28.29_or_fillTriangle.28.29"><span class="tocnumber">9.6.26</span> <span class="toctext">drawTriangle() or fillTriangle()</span></a></li>
+<li class="toclevel-3 tocsection-47"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#drawCircle.28.29_or_fillCircle.28.29"><span class="tocnumber">9.6.27</span> <span class="toctext">drawCircle() or fillCircle()</span></a></li>
+<li class="toclevel-3 tocsection-48"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#drawBitmap.28.29"><span class="tocnumber">9.6.28</span> <span class="toctext">drawBitmap()</span></a></li>
+<li class="toclevel-3 tocsection-49"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#setHorizontalScrollProperties.28.29"><span class="tocnumber">9.6.29</span> <span class="toctext">setHorizontalScrollProperties()</span></a></li>
+<li class="toclevel-3 tocsection-50"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#activateScroll.28.29"><span class="tocnumber">9.6.30</span> <span class="toctext">activateScroll()</span></a></li>
+<li class="toclevel-3 tocsection-51"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#deactivateScroll.28.29"><span class="tocnumber">9.6.31</span> <span class="toctext">deactivateScroll()</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-52"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#How_to_Create_Bitmap"><span class="tocnumber">9.7</span> <span class="toctext">How to Create Bitmap</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-53"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#Schematics"><span class="tocnumber">10</span> <span class="toctext">Schematics</span></a></li>
+<li class="toclevel-1 tocsection-54"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#Resources"><span class="tocnumber">11</span> <span class="toctext">Resources</span></a></li>
+<li class="toclevel-1 tocsection-55"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#How_to_buy"><span class="tocnumber">12</span> <span class="toctext">How to buy</span></a></li>
+<li class="toclevel-1 tocsection-56"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#See_Also"><span class="tocnumber">13</span> <span class="toctext">See Also</span></a></li>
+<li class="toclevel-1 tocsection-57"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#Licensing"><span class="tocnumber">14</span> <span class="toctext">Licensing</span></a></li>
+</ul>
+</td></tr></tbody></table>
+<h2> <span class="mw-headline" id="Introduction"> Introduction </span></h2>
+<p>The I2C OLED(Organic Light-Emitting Diode) Panel is a monochrome 128x64 pixels display module. This display panel works in I2C Mode and has selectable <b>slave address</b>(<font color="red">0x3D/0x3C, default is 0x3D</font>). It has 256-step contrast brightness control, low power consumption, wide viewing angle, wide temperature range, and small size(only about 1" diameter). It requires no backlight and is very readable due to the high contrast of an OLED display.
+</p><p><b>Module:</b> <a href="http://www.geekonfire.com/index.php?main_page=product_info&cPath=6_66&products_id=124&zenid=eltu6qe7mlvhcgrn0l41si4uj3" class="external text" rel="nofollow">M2012080101</a>
+</p><p><a href="http://www.geekonfire.com/wiki/index.php?title=File:OLEDss.jpg" class="image"><img alt="OLEDss.jpg" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/OLEDss.jpg" width="560" height="560"></a>
+</p>
+<h2> <span class="mw-headline" id="Features"> Features </span></h2>
+<ul><li> Low power consumption
+</li><li> Small size
+</li><li> I2C Interface
+</li><li> Alterable Slave Address
+</li><li> Display Color: monochrome
+</li></ul>
+<h2> <span class="mw-headline" id="Specifications"> Specifications </span></h2>
+<table class="wikitable" border="1">
+
+<tbody><tr>
+<td width="200"> Mechanic Dimension
+</td>
+<td width="400"> 31.8mm X22.3mm(without connector)
+</td></tr>
+<tr style="font-size: 90%">
+<td> Communication Protocol
+</td>
+<td> I2C
+</td></tr>
+<tr style="font-size: 90%">
+<td rowspan="2"> Power Supply Voltage
+</td>
+<td> 3V3 for OLED Module from MCU board
+</td></tr>
+<tr style="font-size: 90%">
+<td> 5V for logic power matching from MCU I/O(Supply power of MCU Board)
+</td></tr>
+<tr style="font-size: 90%">
+<td> Operating Current
+</td>
+<td> Max:33mA&nbsp;; Typ: 26mA
+</td></tr>
+<tr style="font-size: 90%">
+<td> OLED Module
+</td>
+<td> <a href="http://www.geekonfire.com/wiki/images/e/eb/SAS1-9068-A_UG-2864HLBEG01-Univision.pdf" class="external text" rel="nofollow">UG-2864HLBEG01</a>,<a href="http://www.geekonfire.com/wiki/images/7/74/UG-2864HSWEG01.pdf" class="external text" rel="nofollow">UG-2864HSWEG01</a>
+</td></tr>
+<tr style="font-size: 90%">
+<td> Display Driver IC
+</td>
+<td> <a href="http://www.geekonfire.com/wiki/images/e/e2/SSD1306-Revision_1.1_%28Charge_Pump%29.pdf" class="external text" rel="nofollow">SSD1306</a>
+</td></tr>
+<tr style="font-size: 90%">
+<td> Number of Pixels
+</td>
+<td> 128 × 64
+</td></tr>
+<tr style="font-size: 90%">
+<td> Pixel Pitch
+</td>
+<td> 0.17 × 0.17 (mm)
+</td></tr>
+<tr style="font-size: 90%">
+<td> Pixel Size
+</td>
+<td> 0.154 × 0.154 (mm)
+</td></tr>
+<tr style="font-size: 90%">
+<td> Operating Temperature
+</td>
+<td> -30 to 70°C
+</td></tr>
+<tr style="font-size: 90%">
+<td> Storage Temperature
+</td>
+<td> -40 to 80°C
+</td></tr>
+<tr style="font-size: 90%">
+<td> Brightness
+</td>
+<td> Typ:100cd/m2; Min:80cd/m2
+</td></tr>
+<tr style="font-size: 90%">
+<td> Display Color
+</td>
+<td> <font color="blue">White/Light Blue</font>(Monochrome)
+</td></tr>
+<tr style="font-size: 90%">
+<td> RoHS
+</td>
+<td> Yes
+</td></tr></tbody></table>
+<h2> <span class="mw-headline" id="Pins_Definition_and_Rating"> Pins Definition and Rating </span></h2>
+<p><a href="http://www.geekonfire.com/wiki/index.php?title=File:Pins_def.jpg" class="image"><img alt="Pins def.jpg" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/400px-Pins_def.jpg" width="400" height="327"></a>
+</p>
+<table class="wikitable" border="1">
+<tbody><tr>
+<th>Pin
+</th>
+<th>Name
+</th>
+<th>Function
+</th>
+<th>Note
+</th>
+<th>Rating
+</th></tr>
+<tr style="font-size: 90%">
+<td align="center" width="100px"> 1
+</td>
+<td align="center" width="100px"> SCL
+</td>
+<td align="center" width="400px"> I2C serial clock pin.
+</td>
+<td align="center" width="300px"> equal to Master MCU's Logic Level
+</td>
+<td align="center" width="200px"> 3V3 - 5V5
+</td></tr>
+<tr style="font-size: 90%">
+<td align="center"> 2
+</td>
+<td align="center"> SDA
+</td>
+<td align="center"> I2C serial data pin.
+</td>
+<td align="center"> equal to Master MCU's Logic Level
+</td>
+<td align="center"> 3V3 - 5V5
+</td></tr>
+<tr style="font-size: 90%">
+<td align="center"> 3
+</td>
+<td align="center"> VIN
+</td>
+<td align="center"> This pin is not Routed in the OLED Panel.
+</td>
+<td align="center"> Connet to VIN Pin of Arduino, or left unconnected.
+</td>
+<td align="center"> Don't care
+</td></tr>
+<tr style="font-size: 90%">
+<td align="center"> 4
+</td>
+<td align="center"> GND
+</td>
+<td align="center"> Ground
+</td>
+<td align="center"> Connect to GND pin of Arduino
+</td>
+<td align="center"> -
+</td></tr>
+<tr style="font-size: 90%">
+<td align="center"> 5
+</td>
+<td align="center"> GND
+</td>
+<td align="center"> Ground
+</td>
+<td align="center"> Connect to GND pin of Arduino
+</td>
+<td align="center"> -
+</td></tr>
+<tr style="font-size: 90%">
+<td align="center"> 6
+</td>
+<td align="center"> 5V
+</td>
+<td align="center"> Supply power for Master MCU, equal to I2C pins Logic Level.
+</td>
+<td align="center"> Connect to 5V pin of Arduino
+</td>
+<td align="center"> 3V3 - 5V5
+</td></tr>
+<tr style="font-size: 90%">
+<td align="center"> 7
+</td>
+<td align="center"> 3V3
+</td>
+<td align="center"> Supply power for Logic(VDD) and DC/DC(VBAT) of OLED Panel
+</td>
+<td align="center"> Connect to 3V3 pin of Arduino
+</td>
+<td align="center"> 3V - 3V6
+</td></tr></tbody></table>
+<h2> <span class="mw-headline" id="Application_Ideas"> Application Ideas </span></h2>
+<ul><li> Portable Display 
+</li><li> Illumination
+</li></ul>
+<h2> <span class="mw-headline" id="Example_Demonstrations"> Example Demonstrations </span></h2>
+<p>There are plenty of examples included in the <a href="http://www.geekonfire.com/wiki/images/7/72/GOFi2cOLED.zip" class="external text" rel="nofollow">GOFi2cOLED Library</a>, the following are some demostrations.
+</p>
+<table align="left">
+
+<tbody><tr>
+<td> <div class="thumb tright"><div class="thumbinner" style="width:222px;"><a href="http://www.geekonfire.com/wiki/index.php?title=File:HeartBeat.gif" class="image"><img alt="" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/HeartBeat.gif" width="220" height="220" class="thumbimage"></a>  <div class="thumbcaption">HeartBeat</div></div></div>
+</td>
+<td> <div class="thumb tright"><div class="thumbinner" style="width:222px;"><a href="http://www.geekonfire.com/wiki/index.php?title=File:DrawChar.gif" class="image"><img alt="" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/DrawChar.gif" width="220" height="220" class="thumbimage"></a>  <div class="thumbcaption">DrawChar</div></div></div>
+</td>
+<td> <div class="thumb tright"><div class="thumbinner" style="width:222px;"><a href="http://www.geekonfire.com/wiki/index.php?title=File:DisplayRotation.gif" class="image"><img alt="" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/DisplayRotation.gif" width="220" height="220" class="thumbimage"></a>  <div class="thumbcaption">DisplayRotation</div></div></div>
+</td>
+<td> <div class="thumb tright"><div class="thumbinner" style="width:222px;"><a href="http://www.geekonfire.com/wiki/index.php?title=File:HorizontalScroll.gif" class="image"><img alt="" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/HorizontalScroll.gif" width="220" height="220" class="thumbimage"></a>  <div class="thumbcaption">HorizontalScroll</div></div></div>
+</td></tr>
+<tr>
+<td> <div class="thumb tright"><div class="thumbinner" style="width:222px;"><a href="http://www.geekonfire.com/wiki/index.php?title=File:DrawLine.gif" class="image"><img alt="" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/DrawLine.gif" width="220" height="220" class="thumbimage"></a>  <div class="thumbcaption">DrawLine</div></div></div>
+</td>
+<td> <div class="thumb tright"><div class="thumbinner" style="width:222px;"><a href="http://www.geekonfire.com/wiki/index.php?title=File:TestCircle.gif" class="image"><img alt="" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/TestCircle.gif" width="220" height="220" class="thumbimage"></a>  <div class="thumbcaption">TestCircle</div></div></div>
+</td>
+<td> <div class="thumb tright"><div class="thumbinner" style="width:222px;"><a href="http://www.geekonfire.com/wiki/index.php?title=File:TestRect.gif" class="image"><img alt="" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/TestRect.gif" width="220" height="220" class="thumbimage"></a>  <div class="thumbcaption">TestRect</div></div></div>
+</td>
+<td> <div class="thumb tright"><div class="thumbinner" style="width:222px;"><a href="http://www.geekonfire.com/wiki/index.php?title=File:TestTriangle.gif" class="image"><img alt="" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/TestTriangle.gif" width="220" height="220" class="thumbimage"></a>  <div class="thumbcaption">TestTriangle</div></div></div>
+</td></tr></tbody></table>
+<p><br clear="all">
+</p>
+<h2> <span class="mw-headline" id="Cautions"> Cautions </span></h2>
+<p><font color="red">
+</font></p><font color="red">
+<ul><li> Fragile, be gentle!
+</li><li> Please install the OLED Panel properly.
+</li></ul>
+</font><p><font color="red"></font>
+</p>
+<h2> <span class="mw-headline" id="Hardware_Diagram"> Hardware Diagram </span></h2>
+<div class="center"><div class="floatnone"><a href="http://www.geekonfire.com/wiki/index.php?title=File:OLEDHWD.jpg" class="image"><img alt="OLEDHWD.jpg" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/800px-OLEDHWD.jpg" width="800" height="515"></a></div></div>
+<h2> <span class="mw-headline" id="Getting_Started"> Getting Started </span></h2>
+<div class="center"><div class="thumb tnone"><div class="thumbinner" style="width:802px;"><a href="http://www.geekonfire.com/wiki/index.php?title=File:OLEDHWINSTAlLATION.jpg" class="image"><img alt="" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/OLEDHWINSTAlLATION.jpg" width="800" height="367" class="thumbimage"></a>  <div class="thumbcaption">Hardware Installation</div></div></div></div>
+<p><br>
+The <b>I2C OLED Panel</b>(128x64) is easy to get started with; We have <a href="http://www.geekonfire.com/wiki/images/7/72/GOFi2cOLED.zip" class="external text" rel="nofollow">GOFi2cOLED Library</a> and plenty of examples, all you need to do is plug-and-play. If you want to program your own application, the following information will give you a start-up. Please refer to <a href="http://www.geekonfire.com/wiki/images/e/eb/SAS1-9068-A_UG-2864HLBEG01-Univision.pdf" class="external text" rel="nofollow">UG-2864HLBEG01</a>/<a href="http://www.geekonfire.com/wiki/images/7/74/UG-2864HSWEG01.pdf" class="external text" rel="nofollow">UG-2864HSWEG01</a> and <a href="http://www.geekonfire.com/wiki/images/e/e2/SSD1306-Revision_1.1_%28Charge_Pump%29.pdf" class="external text" rel="nofollow">SSD1306 Datasheet</a> for more information.
+</p><p>The main part of <b>I2C OLED Panel</b>(128x64) is <a href="http://www.geekonfire.com/wiki/images/e/eb/SAS1-9068-A_UG-2864HLBEG01-Univision.pdf" class="external text" rel="nofollow">UG-2864HLBEG01</a>/<a href="http://www.geekonfire.com/wiki/images/7/74/UG-2864HSWEG01.pdf" class="external text" rel="nofollow">UG-2864HSWEG01</a>, which is a 128x64(pixels) Passive Matrix Monochrome Display. <a href="http://www.geekonfire.com/wiki/images/e/eb/SAS1-9068-A_UG-2864HLBEG01-Univision.pdf" class="external text" rel="nofollow">UG-2864HLBEG01</a>/<a href="http://www.geekonfire.com/wiki/images/7/74/UG-2864HSWEG01.pdf" class="external text" rel="nofollow">UG-2864HSWEG01</a> is driven by SSD1306 chip, which consists of 128 segments and 64commons, has 256-step brightness control and embeds with contrast control, display RAM and oscillator. The embedded 128 x 64 bits SRAM display buffer store the display data for the 128x64 pixels.
+</p>
+<center><b>Block Diagram of Display Module</b></center>
+<div class="center"><div class="floatnone"><a href="http://www.geekonfire.com/wiki/index.php?title=File:BlokD.jpg" class="image"><img alt="BlokD.jpg" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/BlokD.jpg" width="797" height="569"></a></div></div>
+<h3> <span class="mw-headline" id="Graphic_Display_Data_RAM_.28GDDRAM.29"> Graphic Display Data RAM (GDDRAM) </span></h3>
+<p>The GDDRAM is a bit mapped static RAM holding the bit pattern to be displayed. The size of the RAM is 128 x 64 bits and the RAM is divided into eight pages, from PAGE0 to PAGE7, which are used for monochrome 128x64 dot matrix display, as shown in the following Figure:
+</p>
+<center><b>Block Diagram of Display Module</b></center>
+<div class="center"><div class="floatnone"><a href="http://www.geekonfire.com/wiki/index.php?title=File:GDDRAMpagestructure.jpg" class="image"><img alt="GDDRAMpagestructure.jpg" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/GDDRAMpagestructure.jpg" width="1104" height="468"></a></div></div>
+<p><br>
+When one data byte is written into GDDRAM, all the rows image data of the same page of the current column are filled (i.e. the whole column (8 bits) pointed by the column address pointer is filled.). Data bit D0 is written into the top row, while data bit D7 is written into bottom row as shown in the following Figure:
+</p>
+<center><b>Enlargement of GDDRAM (No row re-mapping and column-remapping)</b></center>
+<div class="center"><div class="floatnone"><a href="http://www.geekonfire.com/wiki/index.php?title=File:EnlargementGDDRAM.jpg" class="image"><img alt="EnlargementGDDRAM.jpg" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/EnlargementGDDRAM.jpg" width="1075" height="385"></a></div></div>
+<p><br>
+For mechanical flexibility, re-mapping on both Segment and Common outputs can be selected by software as shown in Figure <b>Block Diagram of Display Module</b><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#Graphic_Display_Data_RAM_.28GDDRAM.29" class="external text" rel="nofollow">click here</a>.
+</p><p>For vertical shifting of the display, an internal register storing the display start line can be set to control the portion of the RAM data to be mapped to the display (command D3h).
+</p>
+<h3> <span class="mw-headline" id="Memory_Addressing_Mode.28Command:_20h.29"> Memory Addressing Mode(Command: 20h)  </span></h3>
+<p>There are 3 different memory addressing mode in SSD1306: <b>page addressing mode</b>, <b>horizontal addressing mode</b> and <b>vertical addressing mode</b>. This command sets the way of memory addressing into one of the above three modes. In there, “COL” means the graphic display data RAM column.
+</p>
+<h4> <span class="mw-headline" id="Page_addressing_Mode.28Command:_0x02.2C_default.28reset.29.29"> Page addressing Mode(Command: 0x02, default(reset)) </span></h4>
+<p>In page addressing mode, after the display RAM is read/written, the column address pointer is increased automatically by 1. If the column address pointer reaches column end address, the column address pointer is reset to column start address and page address pointer is not changed. Users have to set the new page and column addresses in order to access the next page RAM content. The sequence of movement of the PAGE and column address point for page addressing mode is shown in the following Figure:
+</p>
+<center><b>Address Pointer Movement of Page addressing mode</b></center>
+<div class="center"><div class="floatnone"><a href="http://www.geekonfire.com/wiki/index.php?title=File:AddressPointerMovementofPageaddressingmode.jpg" class="image"><img alt="AddressPointerMovementofPageaddressingmode.jpg" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/AddressPointerMovementofPageaddressingmode.jpg" width="654" height="184"></a></div></div>
+<p>In normal display data RAM read or write and page addressing mode, the following steps are required to define the starting RAM access pointer location:
+</p>
+<ul><li> Set the page start address of the target display location by command B0h to B7h.
+</li><li> Set the lower start column address of pointer by command 00h~0Fh.
+</li><li> Set the upper start column address of pointer by command 10h~1Fh.
+</li></ul>
+<p>For example, if the page address is set to B2h, lower column address is 03h and upper column address is 10h, then that means the starting column is SEG3 of PAGE2. The RAM access pointer is located as shown in the following <b>Figure</b>. The input data byte will be written into RAM position of column 3.
+</p>
+<center><b>Example of GDDRAM access pointer setting in Page Addressing Mode (No row and columnremapping)</b></center>
+<div class="center"><div class="floatnone"><a href="http://www.geekonfire.com/wiki/index.php?title=File:ExampleGDDRAMaccesspointersettinginPageAddressingMode.jpg" class="image"><img alt="ExampleGDDRAMaccesspointersettinginPageAddressingMode.jpg" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/ExampleGDDRAMaccesspointersettinginPageAddressingMode.jpg" width="1090" height="289"></a></div></div>
+<h4> <span class="mw-headline" id="Horizontal_addressing_Mode.28Command:_0x00.29"> Horizontal addressing Mode(Command: 0x00) </span></h4>
+<p>In horizontal addressing mode, after the display RAM is read/written, the column address pointer is increased automatically by <b>1</b>. If the column address pointer reaches column end address, the column address pointer is reset to column start address and page address pointer is increased by <b>1</b>. The sequence of movement of the page and column address point for horizontal addressing mode is shown in the following <b>Figure</b>. When both column and page address pointers reach the end address, the pointers are reset to column start address and page start address (Dotted line in the following <b>Figure</b>.)
+</p>
+<center><b>Address Pointer Movement of Horizontal addressing mode</b></center>
+<div class="center"><div class="floatnone"><a href="http://www.geekonfire.com/wiki/index.php?title=File:AddressPointerMovementofHorizontaladdressingmode.jpg" class="image"><img alt="AddressPointerMovementofHorizontaladdressingmode.jpg" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/AddressPointerMovementofHorizontaladdressingmode.jpg" width="660" height="204"></a></div></div>
+<h4> <span class="mw-headline" id="Vertical_addressing_Mode.28Command:_0x01.29"> Vertical addressing Mode(Command: 0x01) </span></h4>
+<p>In vertical addressing mode, after the display RAM is read/written, the page address pointer is increased automatically by<b> 1</b>. If the page address pointer reaches the page end address, the page address pointer is reset to page start address and column address pointer is increased by <b>1</b>. The sequence of movement of the page and column address point for vertical addressing mode is shown in the following <b>Figure</b>. When both column and page address pointers reach the end address, the pointers are reset to column start address and page start address (Dotted line in the following <b>Figure</b>.)
+</p>
+<center><b>Address Pointer Movement of Vertical addressing mode</b></center>
+<div class="center"><div class="floatnone"><a href="http://www.geekonfire.com/wiki/index.php?title=File:AddressPointerMovementofVerticaladdressingmode.jpg" class="image"><img alt="AddressPointerMovementofVerticaladdressingmode.jpg" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/AddressPointerMovementofVerticaladdressingmode.jpg" width="650" height="213"></a></div></div>
+<p>In normal display data RAM read or write and horizontal / vertical addressing mode, the following steps are required to define the RAM access pointer location:
+</p>
+<ul><li> Set the column start and end address of the target display location by command 21h.
+</li><li> Set the page start and end address of the target display location by command 22h.
+</li></ul>
+<p>Please refer to <b>9 COMMAND TABLE</b> and  <b>10 COMMAND DESCRIPTIONS</b> of <a href="http://www.geekonfire.com/wiki/images/e/e2/SSD1306-Revision_1.1_%28Charge_Pump%29.pdf" class="external text" rel="nofollow">SSD1306 Datasheet</a> for details.
+</p>
+<h3> <span class="mw-headline" id="Slave_Address"> Slave Address </span></h3>
+<p>I2C OLED Panel has to recognize the slave address before transmitting or receiving any information by the I2C-bus. The default slave address is <b>0x3D</b>, and the slave address can be changed to <b>0x3C</b> by soldering the <font color="red"><b>SA0</b> pads</font> on the bottom side of the module. The module will respond to the slave address following by the slave address bit (“SA0” bit)
+and the read/write select bit (“R/W#” bit) with the following byte format:
+</p><p><b>b7 b6 b5 b4 b3 b2 b1 b0</b>
+</p><p><b>0 1 1 1 1 0 SA0 R/W#</b>
+</p><p><font color="red">SA0 is Slave address bit, it is pulled up to 3V3 by default. You can connect SA0 bit to Ground by soldering <b>SA0 pads</b>.</font>
+</p>
+<h3> <span class="mw-headline" id="Write_Data"> Write Data </span></h3>
+<p>The I2C interface gives access to write data and command into the module. Please refer to <b>following Figure</b> for the write mode of I2C-bus in chronological order. Please refer to <b>8.1.5 MCU I2C Interface</b> of <a href="http://www.geekonfire.com/wiki/images/e/e2/SSD1306-Revision_1.1_%28Charge_Pump%29.pdf" class="external text" rel="nofollow">SSD1306 Datasheet</a> for more information.
+</p>
+<center><b>I2C-bus data format</b></center>
+<div class="center"><div class="floatnone"><a href="http://www.geekonfire.com/wiki/index.php?title=File:I2cdataformat.jpg" class="image"><img alt="I2cdataformat.jpg" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/I2cdataformat.jpg" width="1054" height="617"></a></div></div>
+<p>To accomplish data write, First slave address must be sent to the module; After the transmission of the slave address, either the control byte or the data byte may be sent. A control byte mainly consists of Co and D/C# bits following by six “0”s.
+</p>
+<ul><li> If the Co bit is set as logic “0”, the transmission of the following information will contain data bytes only.
+</li><li> The D/C# bit determines the next data byte is acted as a command or a data. If the D/C# bit is set to logic “0”, it defines the following data byte as a command. If the D/C# bit is set to
+</li></ul>
+<p>logic “1”, it defines the following data byte as a data which will be stored at the GDDRAM. The GDDRAM column address pointer will be increased by one automatically after each data write.
+</p><p>That means:if you want to send command, the second byte will be <b>0x80</b>(GOFi2cOLED_Command_Mode); and if you want to send data, the second byte will be<b> 0x40</b>(GOFi2cOLED_Data_Mode)
+</p>
+<h4> <span class="mw-headline" id="Command_Mode"> Command Mode </span></h4>
+<p>So the Command Mode data format will be: Slave Address -&gt; GOFi2cOLED_Command_Mode(<b> 0x80</b>) -&gt; Command/Command sets.
+</p>
+<h4> <span class="mw-headline" id="Data_Mode"> Data Mode </span></h4>
+<p>And the Data Mode data format will be: Slave Address -&gt; GOFi2cOLED_Data_Mode(<b> 0x40</b>) -&gt; Data byte/bytes.
+</p>
+<h3> <span class="mw-headline" id="Charge_Pump_Setting.28Command:_0x8D.29"> Charge Pump Setting(Command: 0x8D) </span></h3>
+<p>This I2C OLED Panel is designed to use the internal charge pump regulator to can generate a 7.5V voltage supply for OEL Panel(<b>VCC</b>). So the regulator must be turned on by software command while initializing the Module.
+</p><p>The Charge Pump must be enabled by the following command:<b>0x8D</b>(Charge_Pump_Setting_Cmd) -&gt; <b>0x14</b>(Charge_Pump_Enable_Cmd) -&gt; <b>0xAF</b>(GOFi2cOLED_Display_On_Cmd)
+</p><p>Please refer to <b>Charge Pump Regulator</b> of <a href="http://www.geekonfire.com/wiki/images/e/e2/SSD1306-Revision_1.1_%28Charge_Pump%29.pdf" class="external text" rel="nofollow">SSD1306 Datasheet</a> for details.
+</p>
+<h3> <span class="mw-headline" id="GOFi2cOLED_Library"> GOFi2cOLED Library </span></h3>
+<p><a href="http://www.geekonfire.com/wiki/images/7/72/GOFi2cOLED.zip" class="external text" rel="nofollow">GOFi2cOLED Library</a> provides you an easy start-up. Almost all useful functions are implemented in GOFi2cOLED library. Arduino Wire library needs to be included, so initializing wire library is necessary at the beginning.
+</p><p>Download the <a href="http://www.geekonfire.com/wiki/images/7/72/GOFi2cOLED.zip" class="external text" rel="nofollow">GOFi2cOLED Library</a> and unzip it to your <b>..\Arduino-xx\libraries</b> Folder.
+</p>
+<h4> <span class="mw-headline" id="init.28.29"> init() </span></h4>
+<p>Initializing the I2C OLED Panel: <b>Horizontal Addressing Mode</b>,<b> Normal Display</b>, <b>Deactivate Scroll</b> and <b>Charge Pump enable</b>; Due to the mechanical design, this I2C OLED Panel is also initialized at <b>row re-map</b> and <b>column-remap</b> mode.(The <b>Charge Pump</b> must be enabled). Default slave address is 0x3D.
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">init</span><span class="br0">(</span>SlaveAddress<span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<p><i>Example</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1"><span class="co2">#include &lt;Wire.h&gt;</span>
+<span class="co2">#include &lt;GOFi2cOLED.h&gt;</span>
+&nbsp;
+GOFi2cOLED oled<span class="sy4">;</span>
+&nbsp;
+<span class="kw4">void</span> setup<span class="br0">(</span><span class="br0">)</span>
+<span class="br0">{</span>
+  oled.<span class="me1">init</span><span class="br0">(</span><span class="nu12">0x3D</span><span class="br0">)</span><span class="sy4">;</span>  <span class="co1">//initialze  OLED display, default slave address is 0x3D</span>
+&nbsp;
+  oled.<span class="me1">display</span><span class="br0">(</span><span class="br0">)</span><span class="sy4">;</span> <span class="co1">// show splashscreen</span>
+  delay<span class="br0">(</span><span class="nu0">2000</span><span class="br0">)</span><span class="sy4">;</span>
+&nbsp;
+  oled.<span class="me1">clearDisplay</span><span class="br0">(</span><span class="br0">)</span><span class="sy4">;</span>
+&nbsp;
+  oled.<span class="me1">setTextSize</span><span class="br0">(</span><span class="nu0">1</span><span class="br0">)</span><span class="sy4">;</span>
+  oled.<span class="me1">setTextColor</span><span class="br0">(</span>WHITE<span class="br0">)</span><span class="sy4">;</span>
+  oled.<span class="me1">setCursor</span><span class="br0">(</span><span class="nu0">0</span>,<span class="nu0">0</span><span class="br0">)</span><span class="sy4">;</span>
+  oled.<span class="me1">println</span><span class="br0">(</span><span class="st0">"Hello, world!"</span><span class="br0">)</span><span class="sy4">;</span>
+  oled.<span class="me1">display</span><span class="br0">(</span><span class="br0">)</span><span class="sy4">;</span>
+&nbsp;
+<span class="br0">}</span>
+&nbsp;
+<span class="kw4">void</span> loop<span class="br0">(</span><span class="br0">)</span>
+<span class="br0">{</span>
+&nbsp;
+<span class="br0">}</span></pre></div></div>
+<h4> <span class="mw-headline" id="sendCommand.28.29"> sendCommand() </span></h4>
+<p>Basic function, all the command related operation to the OLED Panel can be achieved by sending proper command using sendCommand(command). 
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">sendCommand</span><span class="br0">(</span>command<span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<h4> <span class="mw-headline" id="sendData.28.29"> sendData() </span></h4>
+<p>Basic function, all the data related operation to the OLED Panel can be achieved by sending proper data using sendData(data). 
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">sendData</span><span class="br0">(</span>data<span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<h4> <span class="mw-headline" id="setNormalDisplay.28.29"> setNormalDisplay() </span></h4>
+<p>Set the display to normal (non-inverse) mode.
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">setNormalDisplay</span><span class="br0">(</span><span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<h4> <span class="mw-headline" id="setInverseDisplay.28.29"> setInverseDisplay() </span></h4>
+<p>Set the display to inverse mode.
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">setInverseDisplay</span><span class="br0">(</span><span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<h4> <span class="mw-headline" id="setCursor.28.29"> setCursor() </span></h4>
+<p>Set the cursor to X, Y.
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">setCursor</span><span class="br0">(</span>x, y<span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<ul><li> x can be any number from 0 - 127.
+</li><li> y can be any number from 0 - 63.
+</li></ul>
+<h4> <span class="mw-headline" id="setBrightness.28.29"> setBrightness() </span></h4>
+<p>Set contract/brightness of the display.
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">setBrightness</span><span class="br0">(</span>brightness<span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<ul><li> brightness can be any number from 0 - 255.
+</li></ul>
+<h4> <span class="mw-headline" id="setTextSize.28.29"> setTextSize() </span></h4>
+<p>Set the size of the text needed to display.
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">setTextSize</span><span class="br0">(</span> s <span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<ul><li> s is textsize, default is 1.
+</li></ul>
+<h4> <span class="mw-headline" id="setTextColor.28.29"> setTextColor() </span></h4>
+<p>Set the color of the text needed to display.
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">setTextColor</span><span class="br0">(</span> c <span class="br0">)</span><span class="sy4">;</span> 
+oled.<span class="me1">setTextColor</span><span class="br0">(</span> c , bg <span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<ul><li> c is textcolor, WHITE(1) or BLACK(0).
+</li><li> bg is background color, WHITE(1) or BLACK(0).
+</li></ul>
+<p><br>
+<i>Example</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1"><span class="co2">#include &lt;Wire.h&gt;</span>
+<span class="co2">#include &lt;GOFi2cOLED.h&gt;</span>
+&nbsp;
+GOFi2cOLED oled<span class="sy4">;</span><span class="co1">// default slave address is 0x3D</span>
+&nbsp;
+<span class="kw4">void</span> setup<span class="br0">(</span><span class="br0">)</span>
+<span class="br0">{</span>
+  oled.<span class="me1">init</span><span class="br0">(</span><span class="nu12">0x3D</span><span class="br0">)</span><span class="sy4">;</span>  <span class="co1">//initialze  OLED display, default address is 0x3D</span>
+&nbsp;
+  oled.<span class="me1">display</span><span class="br0">(</span><span class="br0">)</span><span class="sy4">;</span> <span class="co1">// show splashscreen</span>
+  delay<span class="br0">(</span><span class="nu0">1000</span><span class="br0">)</span><span class="sy4">;</span>
+  oled.<span class="me1">clearDisplay</span><span class="br0">(</span><span class="br0">)</span><span class="sy4">;</span>
+&nbsp;
+  oled.<span class="me1">setTextSize</span><span class="br0">(</span><span class="nu0">1</span><span class="br0">)</span><span class="sy4">;</span>
+  oled.<span class="me1">setTextColor</span><span class="br0">(</span>WHITE<span class="br0">)</span><span class="sy4">;</span>
+  oled.<span class="me1">setCursor</span><span class="br0">(</span><span class="nu0">0</span>,<span class="nu0">0</span><span class="br0">)</span><span class="sy4">;</span>
+  oled.<span class="me1">println</span><span class="br0">(</span><span class="st0">"Hello!"</span><span class="br0">)</span><span class="sy4">;</span>
+  oled.<span class="me1">setTextColor</span><span class="br0">(</span>BLACK, WHITE<span class="br0">)</span><span class="sy4">;</span> <span class="co1">// 'inverted' text</span>
+  oled.<span class="me1">setTextSize</span><span class="br0">(</span><span class="nu0">2</span><span class="br0">)</span><span class="sy4">;</span>
+  oled.<span class="me1">println</span><span class="br0">(</span><span class="st0">"Hello!"</span><span class="br0">)</span><span class="sy4">;</span>
+  oled.<span class="me1">display</span><span class="br0">(</span><span class="br0">)</span><span class="sy4">;</span>
+<span class="br0">}</span>
+&nbsp;
+<span class="kw4">void</span> loop<span class="br0">(</span><span class="br0">)</span>
+<span class="br0">{</span>
+&nbsp;
+<span class="br0">}</span></pre></div></div>
+<h4> <span class="mw-headline" id="setTextWrap.28.29"> setTextWrap() </span></h4>
+<p>If set, 'wrap' text at right edge of display.
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">setTextWrap</span><span class="br0">(</span> w <span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<ul><li> w is true(1) or false（0）, default is true.
+</li></ul>
+<h4> <span class="mw-headline" id="setRotation.28.29"> setRotation() </span></h4>
+<p>Sets the display  rotation. 
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">setRotation</span><span class="br0">(</span> r <span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<ul><li> r is ratation, value can be 0 - 3, default is 0.
+</li></ul>
+<h4> <span class="mw-headline" id="getRotation.28.29"> getRotation() </span></h4>
+<p>Return the display  rotation value( 0 - 3 ). 
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">getRotation</span><span class="br0">(</span><span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<h4> <span class="mw-headline" id="setPageMode.28.29"> setPageMode() </span></h4>
+<p>Configures the display to page addressing mode.
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">setPageMode</span><span class="br0">(</span><span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<h4> <span class="mw-headline" id="setHorizontalMode.28.29"> setHorizontalMode() </span></h4>
+<p>Configures the display to horizontal addressing mode.
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">setHorizontalMode</span><span class="br0">(</span><span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<h4> <span class="mw-headline" id="setVerticalMode.28.29"> setVerticalMode() </span></h4>
+<p>Configures the display to vertical addressing mode.
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">setVerticalMode</span><span class="br0">(</span><span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<h4> <span class="mw-headline" id="clearDisplay.28.29"> clearDisplay() </span></h4>
+<p>Clear the buffer for the OLED display. You can see the effect after you use display() function.
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">clearDisplay</span><span class="br0">(</span><span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<h4> <span class="mw-headline" id="clearArea.28.29"> clearArea() </span></h4>
+<p>Clear the specific buffer area for the OLED display. You can see the effect after you use display() function.
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">clearArea</span><span class="br0">(</span> x, y, w, h<span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<ul><li> x and y are cursor of the start point.
+</li><li> w is the width(pixeles) of the buffer.
+</li><li> h is the height(pixeles) of the buffer.
+</li></ul>
+<h4> <span class="mw-headline" id="width.28.29"> width() </span></h4>
+<p>Return the value of display width, here is 128. 
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">width</span><span class="br0">(</span><span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<h4> <span class="mw-headline" id="height.28.29"> height() </span></h4>
+<p>Return the value of display height, here is 64. 
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">height</span><span class="br0">(</span><span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<h4> <span class="mw-headline" id="print.28.29_and_println.28.29"> print() and println() </span></h4>
+<p>Those two are inherited from Print.h. Print data to the OLED display as human-readable ASCII text. This command can take many forms, it is the same as serial.print() and serial.println(), please refer to <a href="http://arduino.cc/it/Serial/Print" class="external text" rel="nofollow">Print</a>
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">print</span><span class="br0">(</span> <span class="br0">)</span><span class="sy4">;</span> 
+oled.<span class="me1">println</span><span class="br0">(</span> <span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<p><i>Example</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1"><span class="co2">#include &lt;Wire.h&gt;</span>
+<span class="co2">#include &lt;GOFi2cOLED.h&gt;</span>
+&nbsp;
+GOFi2cOLED oled<span class="sy4">;</span><span class="co1">// default slave address is 0x3D</span>
+&nbsp;
+<span class="kw4">void</span> setup<span class="br0">(</span><span class="br0">)</span>
+<span class="br0">{</span>
+  oled.<span class="me1">init</span><span class="br0">(</span><span class="nu12">0x3D</span><span class="br0">)</span><span class="sy4">;</span>  <span class="co1">//initialze  OLED display</span>
+&nbsp;
+  oled.<span class="me1">display</span><span class="br0">(</span><span class="br0">)</span><span class="sy4">;</span> <span class="co1">// show splashscreen</span>
+  delay<span class="br0">(</span><span class="nu0">2000</span><span class="br0">)</span><span class="sy4">;</span>
+  oled.<span class="me1">clearDisplay</span><span class="br0">(</span><span class="br0">)</span><span class="sy4">;</span>
+&nbsp;
+  oled.<span class="me1">setTextSize</span><span class="br0">(</span><span class="nu0">1</span><span class="br0">)</span><span class="sy4">;</span>
+  oled.<span class="me1">setTextColor</span><span class="br0">(</span>WHITE<span class="br0">)</span><span class="sy4">;</span>
+  oled.<span class="me1">setCursor</span><span class="br0">(</span><span class="nu0">0</span>,<span class="nu0">0</span><span class="br0">)</span><span class="sy4">;</span>
+  oled.<span class="me1">println</span><span class="br0">(</span><span class="st0">"Hello, world!"</span><span class="br0">)</span><span class="sy4">;</span>
+  oled.<span class="me1">println</span><span class="br0">(</span><span class="sy2">-</span><span class="nu0">1234</span><span class="br0">)</span><span class="sy4">;</span> 
+  oled.<span class="me1">println</span><span class="br0">(</span><span class="nu16">3.14159</span><span class="br0">)</span><span class="sy4">;</span>  
+  oled.<span class="me1">setTextColor</span><span class="br0">(</span>BLACK, WHITE<span class="br0">)</span><span class="sy4">;</span> <span class="co1">// 'inverted' text</span>
+  oled.<span class="me1">println</span><span class="br0">(</span><span class="nu16">3.14159</span>,<span class="nu0">5</span><span class="br0">)</span><span class="sy4">;</span>
+  oled.<span class="me1">setTextSize</span><span class="br0">(</span><span class="nu0">2</span><span class="br0">)</span><span class="sy4">;</span>
+  oled.<span class="me1">setTextColor</span><span class="br0">(</span>WHITE<span class="br0">)</span><span class="sy4">;</span>
+  oled.<span class="me1">print</span><span class="br0">(</span><span class="st0">"0x"</span><span class="br0">)</span><span class="sy4">;</span> oled.<span class="me1">println</span><span class="br0">(</span><span class="nu12">0xDEADBEEF</span>, HEX<span class="br0">)</span><span class="sy4">;</span>
+  oled.<span class="me1">display</span><span class="br0">(</span><span class="br0">)</span><span class="sy4">;</span>
+&nbsp;
+<span class="br0">}</span>
+&nbsp;
+<span class="kw4">void</span> loop<span class="br0">(</span><span class="br0">)</span>
+<span class="br0">{</span>
+&nbsp;
+<span class="br0">}</span></pre></div></div>
+<h4> <span class="mw-headline" id="drawPixel.28.29"> drawPixel() </span></h4>
+<p>Draw a pixel on the OLED display.
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">drawPixel</span><span class="br0">(</span> x, y, color<span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<ul><li> x and y are cursor of the pixel.
+</li><li> color is WHITE or BLACK.
+</li></ul>
+<h4> <span class="mw-headline" id="drawChar.28.29"> drawChar() </span></h4>
+<p>Draw a 5x7(pixeles) character on the OLED display, if size=1.
+</p><p><a href="http://www.geekonfire.com/wiki/index.php?title=File:Oledchar.jpg" class="image"><img alt="Oledchar.jpg" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/600px-Oledchar.jpg" width="600" height="427"></a>
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">drawChar</span><span class="br0">(</span> x, y, c, color, bg, size<span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<ul><li> x and y are cursor of the start point.
+</li><li> c is the character to draw.
+</li><li> color is WHITE or BLACK.
+</li><li> bg is the background color.
+</li><li> size is character size.
+</li></ul>
+<h4> <span class="mw-headline" id="drawLine.28.29.2C_drawFastHLine.28.29_and_drawFastVLine.28.29"> drawLine(), drawFastHLine() and drawFastVLine() </span></h4>
+<p>Draw a line.
+</p><p><a href="http://www.geekonfire.com/wiki/index.php?title=File:Drawline.jpg" class="image"><img alt="Drawline.jpg" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/600px-Drawline.jpg" width="600" height="424"></a>
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">drawLine</span><span class="br0">(</span> x0, y0, x1, y1, color<span class="br0">)</span><span class="sy4">;</span> 
+oled.<span class="me1">drawFastHLine</span><span class="br0">(</span> x, y, w, color <span class="br0">)</span><span class="sy4">;</span> 
+oled.<span class="me1">drawFastVLine</span><span class="br0">(</span> x, y, h, color <span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<ul><li> (x0, y0) and (x1, y1) are start point and end point of a line.
+</li><li> x and y are cursor of the start point of a Horizontal or Vertical line.
+</li><li> w is the width(pixeles) of the rectangle.
+</li><li> h is the height(pixeles) of the rectangle.
+</li><li> color is WHITE or BLACK
+</li></ul>
+<h4> <span class="mw-headline" id="drawRect.28.29_or_fillRect.28.29"> drawRect() or fillRect() </span></h4>
+<p>Draw a rectangle or fill a rectangle.
+</p><p><a href="http://www.geekonfire.com/wiki/index.php?title=File:Oledrect.jpg" class="image"><img alt="Oledrect.jpg" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/600px-Oledrect.jpg" width="600" height="419"></a>
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">drawRect</span><span class="br0">(</span> x, y,  w, h, color <span class="br0">)</span><span class="sy4">;</span> 
+oled.<span class="me1">fillRect</span><span class="br0">(</span> x, y,  w, h, color <span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<ul><li> x and y are cursor of the start point.
+</li><li> w is the width(pixeles) of the rectangle.
+</li><li> h is the height(pixeles) of the rectangle.
+</li><li> color is WHITE or BLACK
+</li></ul>
+<h4> <span class="mw-headline" id="drawRoundRect.28.29_or_fillRoundRect.28.29"> drawRoundRect() or fillRoundRect() </span></h4>
+<p>Draw or fill a rounded rectangle.
+</p><p><a href="http://www.geekonfire.com/wiki/index.php?title=File:Oledroundrect.jpg" class="image"><img alt="Oledroundrect.jpg" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/600px-Oledroundrect.jpg" width="600" height="419"></a>
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">drawRoundRect</span><span class="br0">(</span> x, y,  w, h, radius, color <span class="br0">)</span><span class="sy4">;</span> 
+oled.<span class="me1">fillRoundRect</span><span class="br0">(</span> x, y,  w, h, radius, color <span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<ul><li> x and y are cursor of the start point.
+</li><li> w is the width(pixeles) of the rectangle.
+</li><li> h is the height(pixeles) of the rectangle.
+</li><li> radius is the corner radius(pixels). 
+</li><li> color is WHITE or BLACK
+</li></ul>
+<h4> <span class="mw-headline" id="drawTriangle.28.29_or_fillTriangle.28.29"> drawTriangle() or fillTriangle() </span></h4>
+<p>Draw or fill a triangle.
+</p><p><a href="http://www.geekonfire.com/wiki/index.php?title=File:Oledtriangle.jpg" class="image"><img alt="Oledtriangle.jpg" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/600px-Oledtriangle.jpg" width="600" height="421"></a>
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">drawTriangle</span><span class="br0">(</span> x0, y0, x1, y1, x2, y2, color<span class="br0">)</span><span class="sy4">;</span> 
+oled.<span class="me1">fillTriangle</span><span class="br0">(</span> x0, y0, x1, y1, x2, y2, color <span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<ul><li> (x0, y0), (x1, y1) and (x2, y2) are three points of the triangle.
+</li><li> color is WHITE or BLACK
+</li></ul>
+<h4> <span class="mw-headline" id="drawCircle.28.29_or_fillCircle.28.29"> drawCircle() or fillCircle() </span></h4>
+<p>Draw or fill a circle.
+</p><p><a href="http://www.geekonfire.com/wiki/index.php?title=File:Oledcircle.jpg" class="image"><img alt="Oledcircle.jpg" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/600px-Oledcircle.jpg" width="600" height="415"></a>
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">drawCircle</span><span class="br0">(</span> x0, y0, r, color<span class="br0">)</span><span class="sy4">;</span> 
+oled.<span class="me1">fillCircle</span><span class="br0">(</span> x0, y0, r, color <span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<ul><li> (x0, y0) is the origin of the circle.
+</li><li> r is the radius(pixeles) of the circle.
+</li><li> color is WHITE or BLACK
+</li></ul>
+<h4> <span class="mw-headline" id="drawBitmap.28.29"> drawBitmap() </span></h4>
+<p>Display a binary bitmap on the OLED Panel. 
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">drawBitmap</span><span class="br0">(</span> x, y, <span class="sy2">*</span>bitmap, w, h, color<span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<ul><li> x and y are cursor of the start point.
+</li><li> bitmap is the Bitmap matrix.
+</li><li> w is the width(pixeles) of the bitmap.
+</li><li> h is the height(pixeles) of the bitmap
+</li><li> color is WHITE or BLACK.
+</li></ul>
+<h4> <span class="mw-headline" id="setHorizontalScrollProperties.28.29"> setHorizontalScrollProperties() </span></h4>
+<p>Configure the properties of horizontal scroll.
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">setHorizontalScrollProperties</span><span class="br0">(</span>direction, startPage, endPage, scrollSpeed<span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<ul><li> direction can be either of Scroll_Left and Scroll_Right.
+</li><li> startPage can be 0-7.
+</li><li> endPage can be 0-7 and endPage &gt; startPage.
+</li><li> scrollSpeed can be any of scrollSpeed can be any of defines <i><b>Scroll_2Frames, Scroll_3Frames, Scroll_4Frames, Scroll_5Frames, Scroll_25Frames, Scroll_64Frames, Scroll_128Frames, Scroll_256Frames</b></i>.
+</li></ul>
+<h4> <span class="mw-headline" id="activateScroll.28.29"> activateScroll() </span></h4>
+<p>Activate scroll.
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">activateScroll</span><span class="br0">(</span><span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<h4> <span class="mw-headline" id="deactivateScroll.28.29"> deactivateScroll() </span></h4>
+<p>Deactivate scroll.
+</p><p><i>Syntax</i>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1">oled.<span class="me1">deactivateScroll</span><span class="br0">(</span><span class="br0">)</span><span class="sy4">;</span></pre></div></div>
+<h3> <span class="mw-headline" id="How_to_Create_Bitmap"> How to Create Bitmap </span></h3>
+<p>Users can create bitmaps to display easily with the <a href="http://en.radzio.dxp.pl/bitmap_converter/LCDAssistant.zip" class="external text" rel="nofollow">LCD assistant</a> software. First you need to concert the image using any kind of graphics software such as photoshop or Paint and save as a Monochrome Bitmap (bmp), here I use Paint.
+</p><p><a href="http://www.geekonfire.com/wiki/index.php?title=File:OLEDBITMAP.jpg" class="image"><img alt="OLEDBITMAP.jpg" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/OLEDBITMAP.jpg" width="800" height="477"></a>
+</p><p>And use <a href="http://en.radzio.dxp.pl/bitmap_converter/LCDAssistant.zip" class="external text" rel="nofollow">LCD assistant</a> software to select <b>File -&gt; Load image</b>, select the right image and you will see the following options:
+</p><p><a href="http://www.geekonfire.com/wiki/index.php?title=File:OLEDlcdA.jpg" class="image"><img alt="OLEDlcdA.jpg" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/OLEDlcdA.jpg" width="534" height="429"></a>
+</p><p>Then select <b>File -&gt; Save output</b> to save the output as a <b>heart.cpp</b> file. And you can use the output directly with our example code.
+</p><p><a href="http://www.geekonfire.com/wiki/index.php?title=File:OLEDbitout.jpg" class="image"><img alt="OLEDbitout.jpg" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/OLEDbitout.jpg" width="475" height="591"></a>
+</p>
+<h2> <span class="mw-headline" id="Schematics"> Schematics </span></h2>
+<p><a href="http://www.geekonfire.com/wiki/images/2/23/I2C_OLED_Panel_sch.pdf" class="external text" rel="nofollow">Schematic of I2C OLED Panel</a>
+</p>
+<h2> <span class="mw-headline" id="Resources"> Resources </span></h2>
+<p><a href="http://www.geekonfire.com/wiki/images/7/72/GOFi2cOLED.zip" class="external text" rel="nofollow">GOFi2cOLED Library for Arduino 00xx and Arduino 1.xx</a>
+</p><p><a href="http://www.geekonfire.com/wiki/images/e/e2/SSD1306-Revision_1.1_%28Charge_Pump%29.pdf" class="external text" rel="nofollow">SSD1306 Datasheet</a>
+</p><p><a href="http://www.geekonfire.com/wiki/images/e/eb/SAS1-9068-A_UG-2864HLBEG01-Univision.pdf" class="external text" rel="nofollow">UG-2864HLBEG01</a>
+</p><p><a href="http://www.geekonfire.com/wiki/images/7/74/UG-2864HSWEG01.pdf" class="external text" rel="nofollow">UG-2864HSWEG01</a>
+</p><p><a href="http://en.radzio.dxp.pl/bitmap_converter/LCDAssistant.zip" class="external text" rel="nofollow">LCD assistant</a>
+</p>
+<h2> <span class="mw-headline" id="How_to_buy"> How to buy  </span></h2>
+<p>I2C OLED Panel(128x64) can be ordered through the GOF store. Its product page is located <a href="http://www.geekonfire.com/index.php?main_page=product_info&cPath=6_66&products_id=124&zenid=eltu6qe7mlvhcgrn0l41si4uj3" class="external text" rel="nofollow">here</a>
+</p>
+<h2> <span class="mw-headline" id="See_Also"> See Also </span></h2>
+<h2> <span class="mw-headline" id="Licensing"> Licensing  </span></h2>
+<p>This documentation is licensed under the Creative Commons <a href="http://creativecommons.org/licenses/by-sa/3.0/" class="external text" rel="nofollow">Attribution-ShareAlike License 3.0</a> Source code and libraries are licensed under <a href="http://www.gnu.org/licenses/gpl.html" class="external text" rel="nofollow">GPL/LGPL</a>, see source code files for details.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 392/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key gofwiki-wk_:pcache:idhash:123-0!*!0!!en!2!edit=0 and timestamp 20150802073844 -->
+<div class="printfooter">
+Retrieved from "<a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)">http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)</a>"</div>
+				<!-- /bodytext -->
+								<!-- catlinks -->
+				<div id="catlinks" class="catlinks catlinks-allhidden"></div>				<!-- /catlinks -->
+												<div class="visualClear"></div>
+			</div>
+			<!-- /bodyContent -->
+		</div>
+		<!-- /content -->
+		<!-- header -->
+		<div id="mw-head" class="noprint">
+			
+<!-- 0 -->
+<div id="p-personal" class="">
+	<h5>Personal tools</h5>
+	<ul>
+					<li id="pt-login"><a href="http://www.geekonfire.com/wiki/index.php?title=Special:UserLogin&returnto=I2C_OLED_Panel(128x64)" title="You are encouraged to log in; however, it is not mandatory [alt-o]" accesskey="o">Log in</a></li>
+			</ul>
+</div>
+
+<!-- /0 -->
+			<div id="left-navigation">
+				
+<!-- 0 -->
+<div id="p-namespaces" class="vectorTabs">
+	<h5>Namespaces</h5>
+	<ul>
+					<li id="ca-nstab-main" class="selected"><span><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)" title="View the content page [alt-c]" accesskey="c">Page</a></span></li>
+					<li id="ca-talk" class="new"><span><a href="http://www.geekonfire.com/wiki/index.php?title=Talk:I2C_OLED_Panel(128x64)&action=edit&redlink=1" title="Discussion about the content page [alt-t]" accesskey="t">Discussion</a></span></li>
+		        <li><span><a title="GOFStore" href="http://www.geekonfire.com/">GOFStore</a></span></li>
+        <li><span><a title="Blog" href="http://www.geekonfire.com/gofblog">Blog</a></span></li>
+        <li><span><a title="Forum" href="http://www.geekonfire.com/gofforum">Forum</a></span></li>
+	</ul>
+</div>
+
+<!-- /0 -->
+
+<!-- 1 -->
+<div id="p-variants" class="vectorMenu emptyPortlet">
+		<h5><span>Variants</span><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#"></a></h5>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+
+<!-- /1 -->
+			</div>
+			<div id="right-navigation">
+				
+<!-- 0 -->
+<div id="p-views" class="vectorTabs">
+	<h5>Views</h5>
+	<ul>
+					<li id="ca-view" class="selected"><span><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)">Read</a></span></li>
+					<li id="ca-viewsource"><span><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)&action=edit" title="This page is protected.
+You can view its source [alt-e]" accesskey="e">View source</a></span></li>
+					<li id="ca-history" class="collapsible "><span><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)&action=history" title="Past revisions of this page [alt-h]" accesskey="h">View history</a></span></li>
+			</ul>
+</div>
+
+<!-- /0 -->
+
+<!-- 1 -->
+<div id="p-cactions" class="vectorMenu emptyPortlet">
+	<h5><span>Actions</span><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)#"></a></h5>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+
+<!-- /1 -->
+
+<!-- 2 -->
+<div id="p-search">
+	<h5><label for="searchInput">Search</label></h5>
+	<form action="http://www.geekonfire.com/wiki/index.php" id="searchform">
+		<input type="hidden" name="title" value="Special:Search">
+				<input id="searchInput" name="search" type="text" title="Search GOF_Wiki [alt-f]" accesskey="f" value="">
+		<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists">
+		<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text">
+			</form>
+</div>
+
+<!-- /2 -->
+			</div>
+		</div>
+		<!-- /header -->
+		<!-- panel -->
+			<div id="mw-panel" class="noprint">
+				<!-- logo -->
+					<div id="p-logo"><a style="background-image: url(/wiki/skins/common/images/wiki.png);" href="http://www.geekonfire.com/wiki/index.php?title=Main_Page" title="Visit the main page"></a></div>
+				<!-- /logo -->
+				
+<!-- navigation -->
+<div class="portal" id="p-navigation">
+	<h5>Navigation</h5>
+	<div class="body">
+				<ul>
+					<li id="n-mainpage-description"><a href="http://www.geekonfire.com/wiki/index.php?title=Main_Page" title="Visit the main page [alt-z]" accesskey="z">Main page</a></li>
+					<li id="n-Product"><a href="http://www.geekonfire.com/wiki/index.php?title=Catalog_Category">Product</a></li>
+					<li id="n-Service"><a href="http://www.geekonfire.com/wiki/index.php?title=GOF_Service">Service</a></li>
+					<li id="n-Tutorial"><a href="http://www.geekonfire.com/wiki/index.php?title=Tutorial">Tutorial</a></li>
+					<li id="n-portal"><a href="http://www.geekonfire.com/wiki/index.php?title=GOF_Wiki:Community_portal" title="About the project, what you can do, where to find things">Community portal</a></li>
+					<li id="n-currentevents"><a href="http://www.geekonfire.com/wiki/index.php?title=GOF_Wiki:Current_events" title="Find background information on current events">Current events</a></li>
+					<li id="n-randompage"><a href="http://www.geekonfire.com/wiki/index.php?title=Special:Random" title="Load a random page [alt-x]" accesskey="x">Random page</a></li>
+				</ul>
+			</div>
+</div>
+
+<!-- /navigation -->
+
+<!-- Support -->
+<div class="portal" id="p-Support">
+	<h5>Support</h5>
+	<div class="body">
+				<ul>
+					<li id="n-recentchanges"><a href="http://www.geekonfire.com/wiki/index.php?title=Special:RecentChanges" title="The list of recent changes in the wiki [alt-r]" accesskey="r">Recent changes</a></li>
+					<li id="n-help"><a href="http://www.geekonfire.com/wiki/index.php?title=Help:Contents" title="The place to find out">Help</a></li>
+					<li id="n-FAQ"><a href="http://www.geekonfire.com/wiki/index.php?title=FAQ">FAQ</a></li>
+				</ul>
+			</div>
+</div>
+
+<!-- /Support -->
+
+<!-- SEARCH -->
+
+<!-- /SEARCH -->
+
+<!-- TOOLBOX -->
+<div class="portal" id="p-tb">
+	<h5>Toolbox</h5>
+	<div class="body">
+		<ul>
+					<li id="t-whatlinkshere"><a href="http://www.geekonfire.com/wiki/index.php?title=Special:WhatLinksHere/I2C_OLED_Panel(128x64)" title="List of all wiki pages that link here [alt-j]" accesskey="j">What links here</a></li>
+						<li id="t-recentchangeslinked"><a href="http://www.geekonfire.com/wiki/index.php?title=Special:RecentChangesLinked/I2C_OLED_Panel(128x64)" title="Recent changes in pages linked from this page [alt-k]" accesskey="k">Related changes</a></li>
+																																										<li id="t-specialpages"><a href="http://www.geekonfire.com/wiki/index.php?title=Special:SpecialPages" title="List of all special pages [alt-q]" accesskey="q">Special pages</a></li>
+									<li id="t-print"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)&printable=yes" rel="alternate" title="Printable version of this page [alt-p]" accesskey="p">Printable version</a></li>
+						<li id="t-permalink"><a href="http://www.geekonfire.com/wiki/index.php?title=I2C_OLED_Panel(128x64)&oldid=919" title="Permanent link to this revision of the page">Permanent link</a></li>
+						</ul>
+	</div>
+</div>
+
+<!-- /TOOLBOX -->
+
+<!-- LANGUAGES -->
+
+<!-- /LANGUAGES -->
+			</div>
+		<!-- /panel -->
+		<!-- footer -->
+		<div id="footer">
+											<ul id="footer-info">
+																	<li id="footer-info-lastmod"> This page was last modified on 8 August 2012, at 17:49.</li>
+																							<li id="footer-info-viewcount">This page has been accessed 65,472 times.</li>
+															</ul>
+															<ul id="footer-places">
+																	<li id="footer-places-privacy"><a href="http://www.geekonfire.com/wiki/index.php?title=GOF_Wiki:Privacy_policy" title="GOF Wiki:Privacy policy">Privacy policy</a></li>
+																							<li id="footer-places-about"><a href="http://www.geekonfire.com/wiki/index.php?title=GOF_Wiki:About" title="GOF Wiki:About">About GOF_Wiki</a></li>
+																							<li id="footer-places-disclaimer"><a href="http://www.geekonfire.com/wiki/index.php?title=GOF_Wiki:General_disclaimer" title="GOF Wiki:General disclaimer">Disclaimers</a></li>
+															</ul>
+											<ul id="footer-icons" class="noprint">
+					<li id="footer-poweredbyico">
+						<a href="http://www.mediawiki.org/"><img src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31"></a>
+					</li>
+				</ul>
+						<div style="clear:both"></div>
+		</div>
+		<!-- /footer -->
+		
+<script src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/load.php"></script><script src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/load(1).php"></script>
+<script>if ( window.mediaWiki ) {
+	mediaWiki.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "I2C_OLED_Panel(128x64)", "wgTitle": "I2C OLED Panel(128x64)", "wgAction": "view", "wgArticleId": 123, "wgIsArticle": true, "wgUserName": null, "wgUserGroups": ["*"], "wgCurRevisionId": 919, "wgCategories": [], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": [], "wgFCKEditorDir": "extensions/FCKeditor/fckeditor/", "wgFCKEditorExtDir": "extensions/FCKeditor", "wgFCKEditorToolbarSet": "Wiki", "wgFCKEditorHeight": "0"});
+}
+</script>
+<script>if ( window.mediaWiki ) {
+	mediaWiki.loader.load(["mediawiki.util", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax"]);
+	mediaWiki.loader.go();
+}
+</script><script type="text/javascript" src="./I2C OLED Panel(128x64) - GOF_Wiki I2C OLED Panel(128x64) - Open Source,Open Minded_files/load(2).php"></script>
+
+<script>if ( window.mediaWiki ) {
+	mediaWiki.user.options.set({"ccmeonemails":0,"cols":80,"contextchars":50,"contextlines":5,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":1,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"vector","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,
+	"watchlistdays":3,"watchlisthideanons":0,"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"riched_use_toggle":1,"riched_start_disabled":1,"riched_use_popup":1,"riched_toggle_remember_state":1,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mediaWiki.loader.state({"user.options":"ready"});
+}
+</script>		<!-- fixalpha -->
+		<script type="text/javascript"> if ( window.isMSIE55 ) fixalpha(); </script>
+		<!-- /fixalpha -->
+		<!-- Served in 0.119 secs. -->			
+
+<script id="hiddenlpsubmitdiv" style="display: none;"></script><script>try{for(var lastpass_iter=0; lastpass_iter < document.forms.length; lastpass_iter++){ var lastpass_f = document.forms[lastpass_iter]; if(typeof(lastpass_f.lpsubmitorig2)=="undefined"){ lastpass_f.lpsubmitorig2 = lastpass_f.submit; if (typeof(lastpass_f.lpsubmitorig2)=='object'){ continue;}lastpass_f.submit = function(){ var form=this; var customEvent = document.createEvent("Event"); customEvent.initEvent("lpCustomEvent", true, true); var d = document.getElementById("hiddenlpsubmitdiv"); if (d) {for(var i = 0; i < document.forms.length; i++){ if(document.forms[i]==form){ if (typeof(d.innerText) != 'undefined') { d.innerText=i.toString(); } else { d.textContent=i.toString(); } } } d.dispatchEvent(customEvent); }form.lpsubmitorig2(); } } }}catch(e){}</script></body></html>
