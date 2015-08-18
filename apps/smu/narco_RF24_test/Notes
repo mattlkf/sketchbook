@@ -1,0 +1,11 @@
+Notes
+
+During powerDown and Narcoleptic sleep, current drawn is approx. 0.12mA
+
+During continuous send (delay removed), current draw is approx. 8.2mA
+
+A very crude experiment: I counted 30s (with a clock) and supplied power to the continuous-sender for that length of time. Within 30s, 2964 packets were sent. Taking the boot-up delay at the start into account, we are looking at a sending rate of ~100Hz, or, 0.01 seconds per packet.
+
+A brief calculation: if we wake to send a packet once a minute, each day we would consume (8.2 * 0.01 / 60 / 60) * (60 * 24) = 0.0328 mAh. Hmm.. that's like negligible..
+
+HOORAY!! The RF24 library works like a charm on the RPi.

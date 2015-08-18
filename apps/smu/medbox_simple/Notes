@@ -1,0 +1,5 @@
+Notes
+
+Copied from narco_RF24_test, this is meant to be a simple program for the medical box device that has the following interesting features:
+
+3) Uses A0 and A1 as CE and CSN, for neater wiring.

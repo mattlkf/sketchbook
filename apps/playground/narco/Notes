@@ -1,0 +1,96 @@
+Tests conducted with an original Arduino Pro Mini and an analog multimeter.
+
+Notes:
+
+--- Initial measurements ---
+
+Bare arduino, my narcoleptic sketch, powered via RAW
+Sleep: 0.35-0.4mA <-- this means the narcoleptic is actually working
+
+Bare arduino, my narcoleptic sketch, sleep delay 1000ms, powered via VCC
+Sleep: 0.65mA <-- this might mean that there is current leaking through the back-driven voltage regulator
+
+Bare arduino, my narcoleptic sketch with delay increased to 15000ms, powered via RAW
+Sleep: 0.35mA <-- Narcoleptic delay is susceptible to drift. After 3 mins worth of 15-second delays, each wake-up was already lagging by about 4s. This suggests that we need to do a time-sync from the gateway every so often. Note that at 0.35mA, you can sleep for 47 days on a 400mAh battery. Good but far from ideal.
+
+Bare arduino, my narcoleptic sketch with delay increased to 15000ms, but NARCO undefined (sleep via simple delay), powered via RAW
+Delay: 3.5mA <-- which shows that Narcoleptic immediately makes things 10x better..
+
+--- After desoldering an LED ---
+
+Bare arduino, my narcoleptic sketch with delay increased to 15000ms, powered via RAW
+Sleep: 0.2mA <-- which means the LED was consuming only .. 0.15mA ??
+
+Bare arduino, my narcoleptic sketch with delay increased to 15000ms, powered via VCC
+Sleep: 0.4mA <-- back-driven voltage regulator at play again
+
+--- After desoldering a voltage regulator ---
+
+
+After desoldering, powering the Arduino via RAW does not cause it to turn on. However 65mA is consumed. I suspect it is because the voltage regulator is hot after desoldering, and this is the quiescent current consumed by the regulator.
+
+Powering the arduino via VCC shows that now, 0.1mA is being consumed. This is good evidence that previously, it was the voltage regulator that was eating up current due to back-current from VCC. 
+
+0.1mA (100 micro-amps) is OK, but we should strive for better. With a 400mAh battery, it is good for 166 days.
+
+Looking at the Arduino schematic, the newest version has a "power isolation jumper" that cuts off the red power led as well as the voltage regulator!! The boards with me seem to be older versions though.
+
+--- Disable brownout detection via programmable fuse settings ---
+
+Ref: http://heliosoph.mit-links.info/arduinoisp-reading-writing-fuses-atmega328p/
+
+Command: avrdude -P /dev/ttyACM0 -b 19200 -c avrisp -p m328p -U efuse:w:0x07:m
+
+Final fuse settings: 
+avrdude: Device signature = 0x1e950f
+avrdude: safemode: lfuse reads as FF
+avrdude: safemode: hfuse reads as DA
+avrdude: safemode: efuse reads as 7
+
+Did not reduce the current consumption. Still 100 microamps.
+
+--- Disable blinking function so LED_PIN is no longer an output pin ---
+
+No change during sleep. Of course it doesn't jump any more every few seconds cos the light is off. 
+
+--- Try use a cloned pro mini ---
+
+The initial clone's fuse settings are:
+
+avrdude: Device signature = 0x1e950f
+avrdude: safemode: lfuse reads as FF
+avrdude: safemode: hfuse reads as DA
+avrdude: safemode: efuse reads as 5 <-- interesting; for the Sparkfun genuine promini this was 0.
+
+Incidentally, according to the datasheet, that is the 'right' fuse setting that a 3.3V promini should have. It causes the typical brownout voltage threshold to be 2.7 (min 2.5, max 2.9).
+
+--- Initial clone experiments ---
+*this is before any cutting or modding of the clone board*
+
+
+*power to VCC* During Narcoleptic-induced sleep, current draw is ~3.5 - 4mA (note that this is about ten times higher than the genuine promini). Possibly due to the power LED, which looks much brighter.
+
+*power to RAW* Around 2.5-3mA. Hmm.
+
+*power to VCC* During a normal non-narcoleptic delay, current is 8mA. The savings of about 4mA by turning on narcoleptic is similar to that in the original promini (a good sign).
+
+*power to RAW* Non-narco delay: 6mA. Same problem with back-driven regulator.
+
+--- After cutting the promini ---
+
+The weird thing is, after removing the LED and removing the output leg of the voltage regulator, current is still 3mA. I suspect the clone promini's adjustable voltage regulator requires some voltage dividers which are eating current. You know what? I'm just going to keep removing components. Let's remove those resistors.
+
+--- After removing two resistors from the promini that looked suspiciously like a voltage divider ---
+
+Mischief managed!! The power consumption has dropped to 100 micro-amps, just like in the original promini.
+
+
+--- Searched to see if others managed better ---
+
+Nick Gammon claims sub-microamp sleeps.
+
+This guy achieved similar sleep current as me.
+http://www.thalin.se/2013/04/arduino-pro-mini-low-power-modification.html
+
+This group got about half as much.
+http://www.home-automation-community.com/arduino-low-power-how-to-run-atmega328p-for-a-year-on-coin-cell-battery/

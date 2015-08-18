@@ -35,6 +35,7 @@ int main(){
 
 	pinMode(13, OUTPUT);
 
+	uint32_t pkt_num = 0;
 	while(1){
 
 	// Blinkenlights
@@ -49,7 +50,7 @@ int main(){
 		uint8_t data[PAYLOADLEN];
 
 	// Sending data
-		sprintf((char*)data, "Hello :)");
+		sprintf((char*)data, "Hello :) %d", pkt_num++);
 		Mirf.send(data);
 
 		while(Mirf.isSending()){

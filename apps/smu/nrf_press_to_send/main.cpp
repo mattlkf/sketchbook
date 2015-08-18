@@ -64,11 +64,20 @@ uint8_t received(){
 }
 
 void showdata(){
+	uint8_t i;
+
 // Get the data
 	Mirf.getData(data);
+	
+// For debugging: dump the 32 bytes' values
+	Serial.print("Recv: ");
+	for(i=0; i<PAYLOADLEN;i++){
+		Serial.print(data[i]);
+		Serial.write(' ');
+	}
+	Serial.println();
 
 // Print the data (stopping at null terminator if any)
-	uint8_t i;
 	for(i=0; data[i] && i<PAYLOADLEN; i++){
 		Serial.write(data[i]);
 	}

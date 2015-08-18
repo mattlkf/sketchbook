@@ -1,0 +1,7 @@
+This demonstrate the use of Narcoleptic in conjunction with I2C and Serial.
+
+If you #define PRINT_TO_SERIAL, current draw during sleep is 0.35mA
+
+Without PRINT_TO_SERIAL defined, current draw during sleep is.. also 0.35mA
+
+Turns out that A4 and A5 were leaking current. Writing LOW to them during sleep solved it.
