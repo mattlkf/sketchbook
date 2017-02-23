@@ -256,6 +256,7 @@ BOARD_BOOTLOADER_PATH := $(call readboardsparam,bootloader.path)
 BOARD_BOOTLOADER_FILE := $(call readboardsparam,bootloader.file)
 endif
 
+
 # invalid board?
 ifeq "$(BOARD_BUILD_MCU)" ""
 ifneq "$(MAKECMDGOALS)" "boards"
@@ -273,10 +274,12 @@ ifneq "$(words $(INOFILE))" "1"
 $(error There is more than one .pde or .ino file in this directory!)
 endif
 
-$(info HI)
+$(info HIJENKINS)
 
 # automatically determine sources and targeet
 TARGET := $(basename $(INOFILE))
+
+
 SOURCES := $(INOFILE) \
 	$(wildcard *.c *.cc *.cpp *.C) \
 	$(wildcard $(addprefix util/, *.c *.cc *.cpp *.C)) \
@@ -289,7 +292,10 @@ LIBRARIES := $(filter $(notdir $(wildcard $(addsuffix /*, $(LIBRARYPATH)))), \
 $(info LIBRARYPATH: $(LIBRARYPATH))
 $(info LIBRARIES: $(LIBRARIES))
 
-endif
+endif #INOFILE auto-mode
+
+$(info WTF)
+$(info Target: $(TARGET))
 
 # software
 findsoftware = $(firstword $(wildcard $(addsuffix /$(1), $(AVRTOOLSPATH))))
@@ -311,7 +317,11 @@ LIBRARYDIRS += $(addsuffix /utility, $(LIBRARYDIRS))
 $(info LIBRARYDIRS: $(LIBRARYDIRS))
 
 # files
+$(info Target2: $(TARGET))
+
 TARGET := $(if $(TARGET),$(TARGET),a.out)
+$(info Target3: $(TARGET))
+
 OBJECTS := $(addsuffix .o, $(basename $(SOURCES)))
 DEPFILES := $(patsubst %, .dep/%.dep, $(SOURCES))
 ARDUINOLIB := .lib/arduino.a
@@ -355,6 +365,8 @@ ifneq "$(MAKECMDGOALS)" "clean"
 -include $(DEPFILES)
 endif
 
+$(info COMPILE.c: $(COMPILE.cpp))
+
 # default rule
 .DEFAULT_GOAL := all
 
@@ -363,7 +375,10 @@ endif
 
 .PHONY:	all target up upload clean boards monitor size bootloader
 
-all: target clean
+all: clean
+# all: target
+
+# all: target clean
 
 test: clean
 	@echo "Within rule test"

@@ -1,0 +1,127 @@
+
+# An attempt at a simple makefile that allows the use of Arduino libraries.
+# Unlike edam's Makefile, this script does only the essential.
+# It does not try too hard to auto-fill values or guess things for the user
+# unless I deem it useful (e.g. finding a TTY)
+
+# Requirements:
+# Have avr tools installed on your own - do not rely on Arduino's tools.
+
+# Credit:
+# 	edam's Makefile
+# 	Pius's ionforge
+
+#_______________________________________________________________________________
+#                                                 Values that need configuration
+
+ARDUINODIR := ~/Misc/arduino-1.8.1
+SKETCHBOOKDIR := ~/git/sketchbook
+
+#_______________________________________________________________________________
+#																	Check for necessary values in project Makefile
+
+ifndef BOARD
+$(error BOARD is unset.)
+endif
+
+#_______________________________________________________________________________
+#																	Generate paths to certain files / directories
+
+# Where the arduino core files are found
+ARDUINOCOREDIR := $(ARDUINODIR)/hardware/arduino/avr/cores/arduino
+
+# A custom boards file we must maintain
+BOARDSFILE := $(SKETCHBOOKDIR)/boards.txt
+
+# Search for libraries installed in sketchbook or in Arduino directories. If there are multiple libraries with the same name, choose the first occuring one.
+LIBRARYPATH ?= $(SKETCHBOOKDIR)/libraries $(ARDUINODIR)/libraries $(ARDUINODIR)/hardware/arduino/avr/libraries
+
+# Path for avr tools
+AVRTOOLSPATH ?= $(subst :, , $(PATH)) $(ARDUINODIR)/hardware/tools \
+	$(ARDUINODIR)/hardware/tools/avr/bin
+
+# A simplified source-file search
+SOURCES := $(wildcard *.c *.cc *.cpp)
+$(info Sources: $(SOURCES))
+
+# Generate list of libraries that were #include-d by source files
+INCLUDED_LIBS := $(shell sed -ne "s/^ *\# *include *[<\"]\(.*\)\.h[>\"]/\1/p" $(SOURCES))
+$(info Included libraries: $(INCLUDED_LIBS))
+
+# Generate list of library directories
+AVAILABLE_LIBS := $(notdir $(wildcard $(addsuffix /*, $(LIBRARYPATH))))
+# $(info Available libraries: $(AVAILABLE_LIBS))
+
+LIBS := $(filter $(AVAILABLE_LIBS), $(INCLUDED_LIBS))
+$(info Will compile: $(LIBS))
+
+# Find the actual paths to the libraries (choose first occuring)
+LIBRARYDIRS_PLAIN := $(foreach lib, $(LIBS), \
+	$(firstword $(wildcard $(addsuffix /$(lib), $(LIBRARYPATH)))))
+
+# Let the entire set of library dirs include sub-directories "src" and "utility"
+LIBRARYDIRS += $(LIBRARYDIRS_PLAIN)
+LIBRARYDIRS += $(addsuffix /src, $(LIBRARYDIRS_PLAIN))
+LIBRARYDIRS += $(addsuffix /utility, $(LIBRARYDIRS_PLAIN))
+
+$(info Librarydirs: $(LIBRARYDIRS))
+
+# software
+findsoftware = $(firstword $(wildcard $(addsuffix /$(1), $(AVRTOOLSPATH))))
+CC := $(call findsoftware,avr-gcc)
+CXX := $(call findsoftware,avr-g++)
+LD := $(call findsoftware,avr-ld)
+AR := $(call findsoftware,avr-ar)
+OBJCOPY := $(call findsoftware,avr-objcopy)
+AVRDUDE := $(call findsoftware,avrdude)
+AVRSIZE := $(call findsoftware,avr-size)
+
+$(info CC: $(CC))
+
+#_______________________________________________________________________________
+#																															Guess a few things
+
+TTYGUESS := 0
+ifndef TTY
+TTY := $(firstword $(wildcard \
+	/dev/ttyACM? /dev/ttyUSB? /dev/tty.usbserial* /dev/tty.usbmodem*))
+TTYGUESS := 1
+endif
+
+#_______________________________________________________________________________
+#																													 Read from boards file
+
+readboardsparam = $(shell sed -ne "s/$(BOARD).$(1)=\(.*\)/\1/p" $(BOARDSFILE))
+BOARD_BUILD_MCU := $(call readboardsparam,build.mcu)
+BOARD_BUILD_FCPU := $(call readboardsparam,build.f_cpu)
+BOARD_BUILD_VARIANT := $(call readboardsparam,build.variant)
+BOARD_UPLOAD_SPEED := $(call readboardsparam,upload.speed)
+BOARD_UPLOAD_PROTOCOL := $(call readboardsparam,upload.protocol)
+BOARD_USB_VID := $(call readboardsparam,build.vid)
+BOARD_USB_PID := $(call readboardsparam,build.pid)
+BOARD_BOOTLOADER_UNLOCK := $(call readboardsparam,bootloader.unlock_bits)
+BOARD_BOOTLOADER_LOCK := $(call readboardsparam,bootloader.lock_bits)
+BOARD_BOOTLOADER_LFUSES := $(call readboardsparam,bootloader.low_fuses)
+BOARD_BOOTLOADER_HFUSES := $(call readboardsparam,bootloader.high_fuses)
+BOARD_BOOTLOADER_EFUSES := $(call readboardsparam,bootloader.extended_fuses)
+BOARD_BOOTLOADER_PATH := $(call readboardsparam,bootloader.path)
+BOARD_BOOTLOADER_FILE := $(call readboardsparam,bootloader.file)
+
+
+#_______________________________________________________________________________
+#																										  Check that board was valid
+
+ifneq "$(MAKECMDGOALS)" "clean"
+ifeq "$(BOARD_BUILD_MCU)" ""
+$(error BOARD=$(BOARD) is invalid.)
+endif
+endif
+
+
+CPPFLAGS += -Os -Wall -fno-exceptions -ffunction-sections -fdata-sections
+
+$(info COMPILE.c: $(COMPILE.c))
+
+
+all:
+	@echo "Done"
