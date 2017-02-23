@@ -161,7 +161,10 @@
 
 # default arduino software directory, check software exists
 # Matt: the line below inserted so as to hard-code ARDUINODIR, avoid autogen
-ARDUINODIR := ~/arduino-1.5.6-r2
+ARDUINODIR := ~/Misc/arduino-1.8.1
+SKETCHBOOKDIR := ~/git/sketchbook
+$(info $(CURDIR))
+# ARDUINODIR := ~/arduino-1.5.6-r2
 
 ifndef ARDUINODIR
 ARDUINODIR := $(firstword $(wildcard ~/opt/arduino /usr/share/arduino \
@@ -186,7 +189,7 @@ PREFERENCESFILE := $(firstword $(wildcard \
 	$(HOME)/.arduino15/preferences.txt $(HOME)/Library/Arduino/preferences.txt))
 ifneq "$(PREFERENCESFILE)" ""
 readpreferencesparam = $(shell sed -ne "s/$(1)=\(.*\)/\1/p" $(PREFERENCESFILE))
-SKETCHBOOKDIR := $(call readpreferencesparam,sketchbook.path)
+# SKETCHBOOKDIR := $(call readpreferencesparam,sketchbook.path)
 $(info HIHI)
 
 $(info SKETCHBOOKDIR now is $(SKETCHBOOKDIR))
