@@ -5,7 +5,9 @@
 # unless I deem it useful (e.g. finding a TTY)
 
 # Requirements:
-# Have avr tools installed on your own - do not rely on Arduino's tools.
+# If you want to use a new board type, update the boards.txt file
+
+# Matt, Feb 2017
 
 # Credit:
 # 	edam's Makefile
@@ -18,11 +20,14 @@ ARDUINODIR := ~/Misc/arduino-1.8.1
 SKETCHBOOKDIR := ~/git/sketchbook
 
 #_______________________________________________________________________________
-#																	Check for necessary values in project Makefile
+#																						Check for values in project Makefile
 
 ifndef BOARD
 $(error BOARD is unset.)
 endif
+
+# If Target not set
+TARGET ?= a.out
 
 #_______________________________________________________________________________
 #																	Generate paths to certain files / directories
@@ -63,6 +68,7 @@ LIBRARYDIRS_PLAIN := $(foreach lib, $(LIBS), \
 LIBRARYDIRS += $(LIBRARYDIRS_PLAIN)
 LIBRARYDIRS += $(addsuffix /src, $(LIBRARYDIRS_PLAIN))
 LIBRARYDIRS += $(addsuffix /utility, $(LIBRARYDIRS_PLAIN))
+LIBRARYDIRS += $(addsuffix /src/utility, $(LIBRARYDIRS_PLAIN))
 
 $(info Librarydirs: $(LIBRARYDIRS))
 
@@ -75,6 +81,10 @@ AR := $(call findsoftware,avr-ar)
 OBJCOPY := $(call findsoftware,avr-objcopy)
 AVRDUDE := $(call findsoftware,avrdude)
 AVRSIZE := $(call findsoftware,avr-size)
+
+# figure out which arg to use with stty (for OS X, GNU and busybox stty)
+STTYFARG := $(shell stty --help 2>&1 | \
+	grep -q 'illegal option' && echo -f || echo -F)
 
 $(info CC: $(CC))
 
@@ -112,16 +122,150 @@ BOARD_BOOTLOADER_FILE := $(call readboardsparam,bootloader.file)
 #																										  Check that board was valid
 
 ifneq "$(MAKECMDGOALS)" "clean"
+ifneq "$(MAKECMDGOALS)" "cl"
 ifeq "$(BOARD_BUILD_MCU)" ""
 $(error BOARD=$(BOARD) is invalid.)
 endif
 endif
+endif
 
+#_______________________________________________________________________________
+#																										  				 Prepare for build
 
+OBJECTS := $(addsuffix .o, $(basename $(SOURCES)))
+DEPFILES := $(patsubst %, .dep/%.dep, $(SOURCES))
+ARDUINOLIB := .lib/arduino.a
+ARDUINOLIBOBJS := $(foreach dir, $(ARDUINOCOREDIR) $(LIBRARYDIRS), \
+	$(patsubst %, .lib/%.o, $(wildcard $(addprefix $(dir)/, *.c *.cpp))))
+
+# avrdude confifuration
+ifeq "$(AVRDUDECONF)" ""
+ifeq "$(AVRDUDE)" "$(ARDUINODIR)/hardware/tools/avr/bin/avrdude"
+AVRDUDECONF := $(ARDUINODIR)/hardware/tools/avr/etc/avrdude.conf
+else
+AVRDUDECONF := $(wildcard $(AVRDUDE).conf)
+endif
+endif
+
+# flags
 CPPFLAGS += -Os -Wall -fno-exceptions -ffunction-sections -fdata-sections
+CPPFLAGS += -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
+CPPFLAGS += -mmcu=$(BOARD_BUILD_MCU)
+CPPFLAGS += -DF_CPU=$(BOARD_BUILD_FCPU) -DARDUINO=$(ARDUINOCONST)
+CPPFLAGS += -DUSB_VID=$(BOARD_USB_VID) -DUSB_PID=$(BOARD_USB_PID)
+CPPFLAGS += -I. -Iutil -Iutility -I $(ARDUINOCOREDIR)
+CPPFLAGS += -I $(ARDUINODIR)/hardware/arduino/avr/variants/$(BOARD_BUILD_VARIANT)/
+CPPFLAGS += $(addprefix -I , $(LIBRARYDIRS))
+CPPDEPFLAGS = -MMD -MP -MF .dep/$<.dep
+CPPINOFLAGS := -x c++ -include $(ARDUINOCOREDIR)/Arduino.h
+AVRDUDEFLAGS += $(addprefix -C , $(AVRDUDECONF)) -DV
+AVRDUDEFLAGS += -p $(BOARD_BUILD_MCU) -P $(TTY)
+AVRDUDEFLAGS += -c $(BOARD_UPLOAD_PROTOCOL) -b $(BOARD_UPLOAD_SPEED)
+LINKFLAGS += -Os -Wl,--gc-sections -mmcu=$(BOARD_BUILD_MCU)
 
-$(info COMPILE.c: $(COMPILE.c))
+# include dependencies
+ifneq "$(MAKECMDGOALS)" "clean"
+ifneq "$(MAKECMDGOALS)" "cl"
+-include $(DEPFILES)
+endif
+endif
+
+# $(info COMPILE.c: $(COMPILE.c))
+
+#_______________________________________________________________________________
+#																																					 Rules
+
+.PHONY:	all up upload cl clean boards size
 
 
-all:
+all: target clean
 	@echo "Done"
+
+up: upload
+
+cl: clean
+
+target: $(TARGET).hex
+
+clean:
+	rm -f $(OBJECTS)
+	rm -f $(TARGET).elf $(TARGET).hex $(ARDUINOLIB) *~
+	rm -rf .lib .dep
+
+upload: target uploadcore clean
+
+uploadcore:
+	@echo "\nUploading to board..."
+	@test -n "$(TTY)" || { \
+		echo "error: TTY could not be determined automatically." >&2; \
+		exit 1; }
+	@test 0 -eq $(TTYGUESS) || { \
+		echo "*GUESSING* at serial device:" $(TTY); \
+		echo; }
+ifeq "$(BOARD_BOOTLOADER_PATH)" "caterina"
+	stty $(STTYFARG) $(TTY) speed 1200
+	sleep 1
+else
+	stty $(STTYFARG) $(TTY) hupcl
+endif
+	$(AVRDUDE) $(AVRDUDEFLAGS) -U flash:w:$(TARGET).hex:i
+
+size: sizecore clean
+
+sizecore: $(TARGET).elf 
+	echo && $(AVRSIZE) --format=avr --mcu=$(BOARD_BUILD_MCU) $(TARGET).elf
+
+# building the target
+
+$(TARGET).hex: $(TARGET).elf
+	$(OBJCOPY) -O ihex -R .eeprom $< $@
+
+.INTERMEDIATE: $(TARGET).elf
+
+$(TARGET).elf: $(ARDUINOLIB) $(OBJECTS)
+	$(CC) $(LINKFLAGS) $(OBJECTS) $(ARDUINOLIB) -lm -o $@
+
+%.o: %.c
+	mkdir -p .dep/$(dir $<)
+	$(COMPILE.c) $(CPPDEPFLAGS) -o $@ $<
+
+%.o: %.cpp
+	mkdir -p .dep/$(dir $<)
+	$(COMPILE.cpp) $(CPPDEPFLAGS) -o $@ $<
+
+%.o: %.cc
+	mkdir -p .dep/$(dir $<)
+	$(COMPILE.cpp) $(CPPDEPFLAGS) -o $@ $<
+
+%.o: %.C
+	mkdir -p .dep/$(dir $<)
+	$(COMPILE.cpp) $(CPPDEPFLAGS) -o $@ $<
+
+%.o: %.ino
+	mkdir -p .dep/$(dir $<)
+	$(COMPILE.cpp) $(CPPDEPFLAGS) -o $@ $(CPPINOFLAGS) $<
+
+%.o: %.pde
+	mkdir -p .dep/$(dir $<)
+	$(COMPILE.cpp) $(CPPDEPFLAGS) -o $@ $(CPPINOFLAGS) $<
+
+# building the arduino library
+
+$(ARDUINOLIB): $(ARDUINOLIBOBJS)
+	$(AR) rcs $@ $?
+
+.lib/%.c.o: %.c
+	mkdir -p $(dir $@)
+	$(COMPILE.c) -o $@ $<
+
+.lib/%.cpp.o: %.cpp
+	mkdir -p $(dir $@)
+	$(COMPILE.cpp) -o $@ $<
+
+.lib/%.cc.o: %.cc
+	mkdir -p $(dir $@)
+	$(COMPILE.cpp) -o $@ $<
+
+.lib/%.C.o: %.C
+	mkdir -p $(dir $@)
+	$(COMPILE.cpp) -o $@ $<
