@@ -19,6 +19,9 @@
 ARDUINODIR := ~/Misc/arduino-1.8.1
 SKETCHBOOKDIR := ~/git/sketchbook
 
+# default arduino version
+ARDUINOCONST ?= 100
+
 #_______________________________________________________________________________
 #																						Check for values in project Makefile
 

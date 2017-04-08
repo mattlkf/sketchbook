@@ -1,0 +1,34 @@
+main.o: main.cpp \
+ /home/matt/Misc/arduino-1.8.1/hardware/arduino/avr/cores/arduino/Arduino.h \
+ /home/matt/Misc/arduino-1.8.1/hardware/arduino/avr/cores/arduino/binary.h \
+ /home/matt/Misc/arduino-1.8.1/hardware/arduino/avr/cores/arduino/WCharacter.h \
+ /home/matt/Misc/arduino-1.8.1/hardware/arduino/avr/cores/arduino/WString.h \
+ /home/matt/Misc/arduino-1.8.1/hardware/arduino/avr/cores/arduino/HardwareSerial.h \
+ /home/matt/Misc/arduino-1.8.1/hardware/arduino/avr/cores/arduino/Stream.h \
+ /home/matt/Misc/arduino-1.8.1/hardware/arduino/avr/cores/arduino/Print.h \
+ /home/matt/Misc/arduino-1.8.1/hardware/arduino/avr/cores/arduino/Printable.h \
+ /home/matt/Misc/arduino-1.8.1/hardware/arduino/avr/cores/arduino/USBAPI.h \
+ /home/matt/Misc/arduino-1.8.1/hardware/arduino/avr/cores/arduino/Arduino.h \
+ /home/matt/Misc/arduino-1.8.1/hardware/arduino/avr/variants/standard/pins_arduino.h
+
+/home/matt/Misc/arduino-1.8.1/hardware/arduino/avr/cores/arduino/Arduino.h:
+
+/home/matt/Misc/arduino-1.8.1/hardware/arduino/avr/cores/arduino/binary.h:
+
+/home/matt/Misc/arduino-1.8.1/hardware/arduino/avr/cores/arduino/WCharacter.h:
+
+/home/matt/Misc/arduino-1.8.1/hardware/arduino/avr/cores/arduino/WString.h:
+
+/home/matt/Misc/arduino-1.8.1/hardware/arduino/avr/cores/arduino/HardwareSerial.h:
+
+/home/matt/Misc/arduino-1.8.1/hardware/arduino/avr/cores/arduino/Stream.h:
+
+/home/matt/Misc/arduino-1.8.1/hardware/arduino/avr/cores/arduino/Print.h:
+
+/home/matt/Misc/arduino-1.8.1/hardware/arduino/avr/cores/arduino/Printable.h:
+
+/home/matt/Misc/arduino-1.8.1/hardware/arduino/avr/cores/arduino/USBAPI.h:
+
+/home/matt/Misc/arduino-1.8.1/hardware/arduino/avr/cores/arduino/Arduino.h:
+
+/home/matt/Misc/arduino-1.8.1/hardware/arduino/avr/variants/standard/pins_arduino.h:

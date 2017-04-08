@@ -6,6 +6,8 @@
 // #include <Arduino.h>
 #include <SPI.h>
 #include "RF24.h"
+#include "Wire.h"
+#include "SparkFunISL29125.h"
 
 /****************** User Config ***************************/
 // Choose the names of the transmiting Pipe and the reading Pipe.
@@ -20,7 +22,8 @@ uint8_t data[PAYLOADLEN]; // a data buffer
 RF24 radio(8,7); //(ce,csn)
 /**********************************************************/
 
-bool read_mode = true;
+// Declare sensor object
+SFE_ISL29125 RGB_sensor;
 
 void setupRF24(){
 
@@ -28,8 +31,8 @@ void setupRF24(){
 
     // Set the PA Level low to prevent power supply related issues since this is a
     // getting_started sketch, and the likelihood of close proximity of the devices. RF24_PA_MAX is default.
-    radio.setPALevel(RF24_PA_MAX);
-    // radio.setPALevel(RF24_PA_LOW);
+    // radio.setPALevel(RF24_PA_MAX);
+    radio.setPALevel(RF24_PA_LOW);
 
     // Open a writing and reading pipe
     radio.openWritingPipe((byte *) TXNAME);
@@ -42,12 +45,22 @@ void setupRF24(){
 void setup() {
     Serial.begin(115200);
 
+    RGB_sensor.init();
+
     setupRF24();
 }
 
 uint8_t send(){
+    uint16_t red   = RGB_sensor.readRed();
+    uint16_t green = RGB_sensor.readGreen();
+    uint16_t blue  = RGB_sensor.readBlue();
+
     // Write data
-    snprintf((char*)data, PAYLOADLEN, "time: %lu", millis());
+    snprintf((char*)data, PAYLOADLEN, "%u %u %u", red, green, blue);
+
+    // Debug
+    Serial.print(" data: ");
+    Serial.println((const char*)data);
 
     // Stop listening so we can talk
     radio.stopListening();
@@ -62,57 +75,9 @@ uint8_t send(){
     return (result == 0); 
 }
 
-uint8_t received(){
-    return radio.available();
-}
-
-
-void showdata(){
-    uint8_t i;
-
-// Make sure there is actually data
-    if(!radio.available()) return;
-
-// Get the data
-    radio.read(data, PAYLOADLEN);
-
-// For debugging: dump the 32 bytes' values
-    if(!read_mode){
-        Serial.print("Recv: ");
-        for(i=0; i<PAYLOADLEN;i++){
-            Serial.print(data[i]);
-            Serial.write(' ');
-        }
-        Serial.println();
-    }
-
-// Print the data (stopping at null terminator if any)
-    for(i=0; data[i] && i<PAYLOADLEN; i++){
-        Serial.write(data[i]);
-    }
-    Serial.println();
-
-    // static float ar = 0, ag = 0, ab = 0;
-
-    // int r, g, b;
-    // sscanf((const char*)data, "%d %d %d", &r, &g, &b);
-
-    // ar = 0.9 * ar + 0.1 * (float) r;
-    // ag = 0.9 * ag + 0.1 * (float) g;
-    // ab = 0.9 * ab + 0.1 * (float) b;
-
-    // // Serial.print("RA");
-    // Serial.print(ar);
-    // Serial.print(" ");
-    // Serial.print(ag);
-    // Serial.print(" ");
-    // Serial.println(ab);
-    // Serial.println();
-}
-
 uint8_t time_to_send(){
     static uint32_t last_time = 0;
-    const uint32_t delay = 1000; // the period
+    const uint32_t delay = 200; // the period
     if(millis() - last_time > delay){
         last_time = millis();
         return true;
@@ -131,18 +96,31 @@ void verbose(uint8_t (*fp)(void)){
     }
 }
 
-uint8_t pressed(){
-    uint8_t pflag = 0;
-    while(Serial.available()){ // empty the serial buffer
-        pflag = 1;
-        Serial.read();
-    }
-    return pflag;
+uint8_t received(){
+    return radio.available();
 }
 
-void toggle_mode(){
-    read_mode = !read_mode;
+void showdata(){
+    uint8_t i;
+    
+// Get the data
+    radio.read(data, PAYLOADLEN);
+
+// For debugging: dump the 32 bytes' values
+    Serial.print("Recv: ");
+    for(i=0; i<PAYLOADLEN;i++){
+        Serial.print(data[i]);
+        Serial.write(' ');
+    }
+    Serial.println();
+
+// Print the data (stopping at null terminator if any)
+    for(i=0; data[i] && i<PAYLOADLEN; i++){
+        Serial.write(data[i]);
+    }
+    Serial.println();
 }
+
 
 // Matt: the main function that Arduino appends (I think)
 
@@ -151,9 +129,8 @@ int main(){
     setup();
 
     while(1){
-        if(!read_mode && time_to_send()) verbose(send);
+        if(time_to_send()) verbose(send);
         if(received()) showdata();
-        if(pressed()) toggle_mode();
     }
     return 0;
 }

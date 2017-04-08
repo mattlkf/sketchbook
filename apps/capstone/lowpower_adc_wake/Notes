@@ -1,0 +1,10 @@
+This program is meant to demonstrate the "periodic wakeup and read ADC" behaviour.
+
+Using an oscilloscope I determined that it takes 218 - 235 microseconds to wake, take a reading, and sleep.
+
+When doing continuous readings from the ADC, the Arduino draws <3mA. Assuming a 10K thermistor in series with a 10K resistor, that will add another 0.16 - 0.33mA. So total current during this brief wake-up is at most 4mA.
+
+Suppose we do the wake-up once per second. Then the average current draw is 4 * 250 / 10^6 = 0.001mA = 1uA.
+
+
+

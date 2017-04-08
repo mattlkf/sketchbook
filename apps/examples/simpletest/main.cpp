@@ -18,6 +18,6 @@ int main(){
 		digitalWrite(13, HIGH);
 		delay(100);
 
-		Serial.println("!");
+		Serial.println("?");
 	}
 }

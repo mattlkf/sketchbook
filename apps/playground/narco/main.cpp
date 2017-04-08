@@ -16,6 +16,8 @@ Redisable + Narco sleep: 21.71mA
 
 #define NARCO
 
+#define BLINK_HIGH_MICROSECONDS 1
+
 #define LEDPIN 13
 #define MAX_BLINKS 1
 
@@ -36,7 +38,7 @@ void blink(uint8_t k){
 	Narcoleptic.enableMillis();
 	for(uint8_t i = 0; i < k;i++){
 		digitalWrite(LEDPIN, HIGH);
-		delayMicroseconds(500);
+		delayMicroseconds(BLINK_HIGH_MICROSECONDS);
 		
 		digitalWrite(LEDPIN, LOW);
 		if(i < k) delay(99);

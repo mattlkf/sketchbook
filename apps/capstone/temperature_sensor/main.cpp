@@ -5,7 +5,7 @@
 #include <Arduino.h>
 
 #define TEMP_PIN A0
-#define V_MAX 3.3
+#define V_MAX 3.2
 
 #define V_DEG_0 0.500
 #define TEMP_COEFF 0.01
@@ -27,6 +27,15 @@ int main(){
     while(1){
         Serial.print("Temp: ");
         Serial.println(temp());
+
+        // Serial.print("A0: ");
+        // Serial.println(analogRead(A0));
+
+        // Serial.print("A4: ");
+        // Serial.println(analogRead(A4));
+
+        // Serial.print("A5: ");
+        // Serial.println(analogRead(A5));
 
         delay(500);
     }
